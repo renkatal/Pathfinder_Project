@@ -1,5 +1,4 @@
 package pthfndr.src.main;
-
 public class Special {
 	class Attack
 	{

@@ -1,11 +1,10 @@
 package pthfndr.src.main;
-
 public class Sheild extends Item{
 	private static double thicness;
 	public Sheild(String name, int type, int ACbonus, int maxDex, int checkPenalty, int spellFalure, int weight, int cost, int material, int creatureSize, int creatureType, boolean masterwork)
 	{
 		
-		super(name,creatureSize-2,material,cost,weight,thicness,masterwork); // Item constructor
+		super(name,creatureSize-2,material,cost,weight,thicness); // Item constructor
 		double[] sizeCostMod = {1/2,1/2,1/2,1,1,2,4,8,16};  //cost mod for creature size
 		double[] sizeWeightMod = {1/10,1/10,1/10,1/2,1,2,5,8,12}; // weight mod for creature size
 		this.setCost((int)(cost * sizeCostMod[creatureSize]));
@@ -85,11 +84,12 @@ public class Sheild extends Item{
 		this.setItemSize(size - 1);
 	}
 
-	public void equip(Sheild sheild, Creature creature)
+	public void equip(Sheild sheild, Creature creature, int appendage)
 	{
-		if (creature.checkHand(Creature.Hand.OFF) == false)
+		if (creature.checkHolding(appendage) == false)
 		{
-			creature.equipHand(Creature.Hand.OFF, sheild);
+			creature.holdItem(appendage, sheild);
+			creature.setShield(sheild);
 			sheild.speed(creature);
 		}
 	}

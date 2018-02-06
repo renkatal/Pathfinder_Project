@@ -7,12 +7,14 @@ public class Weapon extends Item {
 		super(name, Size, Material, cost, weight, thickness);
 		// TODO Auto-generated constructor stub
 	}
-	private int[] damage;
+	private int damage;
 	private int critical;
 	private int range;
-	private boolean[] type;
-	
-
+	private boolean[] type; 
+	private boolean[] special;
+	{
+		
+	}
 	public static void main(String[] args) 
 	{
 		

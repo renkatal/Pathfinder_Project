@@ -1,4 +1,5 @@
 package pthfndr.src.main;
+
 public class Aura {
 	public static final int LAW = 0, GOOD = 1, CHAOS = 2, EVIL = 3, UNDEAD = 4;
 

@@ -13,7 +13,7 @@ public class Character extends Creature {
 	private String eyeColor;
 	private String hairColor;
 	private int gender;
-	private String deity = "None";
+	private Deity deity;
 	private String homeland = "None";
 	
 	
@@ -77,6 +77,18 @@ public class Character extends Creature {
 
 	
 
+	public Deity getDeity() {
+		return deity;
+	}
+	public void setDeity(Deity deity) {
+		this.deity = deity;
+	}
+	public String getHomeland() {
+		return homeland;
+	}
+	public void setHomeland(String homeland) {
+		this.homeland = homeland;
+	}
 	public static void main(String[] args) {
 		System.out.print(Name.stat[Stat.STR]);
 		

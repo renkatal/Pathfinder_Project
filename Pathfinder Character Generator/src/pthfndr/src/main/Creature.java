@@ -1,7 +1,7 @@
 package pthfndr.src.main;
-//Creature class 
-public class Creature {
+import java.util.ArrayList;
 
+public class Creature {
 	private String creatureName;
 	private int type;
 	private boolean[] subtypes = new boolean[Subtype.maxNumber()];
@@ -19,9 +19,8 @@ public class Creature {
 	private int[] resistances;
 	private boolean[] weaknesses;
 	private int[] speed;
-	private int speedMod;
-	//private weapon[] melee; // weapon class
-	//private weapon[] ranged;//
+	private  ArrayList<Weapon> melee = new ArrayList<>();
+	private ArrayList<Weapon> ranged = new ArrayList<>();
 	private int space;
 	private int reach;
 	private boolean[] breath;
@@ -33,23 +32,23 @@ public class Creature {
 	private int baseAttack;
 	private int combatManuverBonus;
 	private int combatManuverDefense;
-	private int[] feats;
-	private int[] classSkills;
+	private ArrayList<Feat> feats = new ArrayList<>();
+	private boolean[] classSkills;
 	private byte[][][] skill;
 	private int skillPoints;
-	private int[][] racialSkillMod;
 	private boolean[] Language;
-	private int[] specialQualities;
+	private ArrayList<Special> specialQualities;
 	private boolean[] environment;
-	private Item[] inventory;
-	private Special[] specialAbilities;
-	private boolean conditions;
+	private ArrayList<Item> inventory;
+	private ArrayList<Special> specialAbilities;
+	private boolean[] conditions;
 	private int[] anatomy;
 	private Item[] slot;
 	private int armorProficiency = Armor.ArmorType.NONE; // sets creatures initial armor proficentcy to none
 	private Armor armor = Armor.None(this);
 	private Sheild sheild;
-	private Item[] hand;
+	private Item[] held;
+	
 	
 	class Slot {
 	public static final int HEAD = 0, HEADBAND = 1, EYES = 2, SHOULDERS = 3, NECK = 4, CHEST = 5, ARMOR = 6, BELT = 7, WRISTS = 8, HANDS = 9, RING1 = 10, RING2 = 11;
@@ -138,7 +137,7 @@ public class Creature {
 	public void statsRandom()
 	{
 		for (int i = 0; i < 6; i++)
-			this.stats[i] = Roll.PCstatRoll();
+			this.stats[i] = Roll.statRoll();
 	}
 	public void setTempStatAdjusment(int stat, int adjustment)
 	{
@@ -378,15 +377,15 @@ public class Creature {
 	//Special methods
 	public int specialLength()
 	{
-		return specialAbilities.length;
+		return specialAbilities.size();
 	}
 	public void newSpecial(Special special)
 	{
-		this.specialAbilities[specialLength()] = special;
+		this.specialAbilities.add(special);
 	}
 	public Special getSpecial(int x)
 	{
-		return specialAbilities[x];
+		return specialAbilities.get(x);
 	}
 	
 	//breath getters and setters
@@ -419,17 +418,18 @@ public class Creature {
 		this.speed[3] = speed;
 		this.speed[4] = manuvarability;
 	}
+	
 	public int getSpeed()
 	{
-		return Roll.minnimum(this.speed[0] + this.speedMod,5);
+		return Roll.minnimum(this.speed[0],5);
 	}
 	public void setSpeedMod(int mod)
 	{
-		this.speedMod = mod;
+		this.speed[5] = mod;
 	}
 	public int getSpeedMod()
 	{
-		return speedMod;
+		return this.speed[5];
 	}
 	
 	//armor getters and setters
@@ -448,52 +448,68 @@ public class Creature {
 		return armor.getMaxDex();
 		
 	}
+	public int getArmorProficiency()
+	{
+		return this.armorProficiency;
+	}
+	public void setArmorProficiency(int armorProficiency)
+	{
+		this.armorProficiency = armorProficiency;
+	}
 	
 	//intventory Methods
 	public int getInventroySize()
 	{
-		return inventory.length;
+		return inventory.size();
 	}
 	public double getInventoryWeight()
 	{
 		int weight = 0;
 		for ( int i = 0; i < getInventroySize(); i++)
 		{
-			if (inventory[i] != null)
-			weight += inventory[i].getWeight();
+			if (inventory != null)
+			weight += inventory.get(i).getWeight();
 		}
 		return weight;
 	}
 	public void pickUpItem(Item item)
 	{
 		item.held(this);
-		this.inventory[inventory.length] = item;
+		this.inventory.add(item);
 		
 	}
 	public void dropItem(Item item)
 	{
-		for (int i = 0; i < inventory.length; i++)
+		for (int i = 0; i < inventory.size(); i++)
 		{
-			if (item.equals(inventory[i]))
+			if (item.equals(inventory.get(i)))
 			{
 				item.dropped();
-				inventory[i] = null;
+				inventory.remove(i);
 				return;
 			}
 			
 		}
 	}
-	public boolean checkHand(int hand) // check to see if there is an item in the hand that would prevent its use;
+	public boolean checkHolding(int appendage) // check to see if there is an item in the hand that would prevent its use;
 	{
-		if (this.hand[hand] == null)
+		if (this.held[appendage] == null)
 		{
 			return false;
 		}
 		return true;
 	}
-	public void equipHand(int hand, Item item)
+	public void holdItem(int appendage, Item item)
 	{
-		this.hand[hand] = item;
+		this.held[appendage] = item;
+	}
+	public Sheild getSheild()
+	{
+		return this.sheild;
+	}
+	public void setSheild(Sheild sheild)
+	{
+		this.sheild = sheild;
 	}
 
 	public static void main(String[] args) {

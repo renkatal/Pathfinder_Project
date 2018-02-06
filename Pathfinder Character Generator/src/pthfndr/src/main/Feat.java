@@ -1,11 +1,11 @@
 package pthfndr.src.main;
+import java.util.ArrayList;
 
 public class Feat {
 	private String name;
 	private String description;
-	private Feat[] featPrerequisite;
+	private ArrayList<Feat> featPrerequisite;
 	private int[] statPrerequisite;
-	private int prereqCount = 0;
 	private Benefit benefit;
 
 	public class Benefit 
@@ -17,12 +17,12 @@ public class Feat {
 		}
 		public class skillsPlus2
 		{
-			skillsPlus2(int skill1, int skill2)
+			skillsPlus2(byte skill1, byte skill2)
 			{
 				if (creature.getSkillRank(skill1) == 10)
 					
-				creature.setSkillBonus(skill1, 2);
-				creature.setSkillBonus(skill2, 2);
+				creature.setSkillBonus(skill1,(byte) 2);
+				creature.setSkillBonus(skill2,(byte) 2);
 			}
 			
 		}
@@ -30,7 +30,7 @@ public class Feat {
 		{
 			armorProficentcy(int armorType)
 			{
-				creature.
+				creature.setArmorProficiency(armorType);
 			}
 		}
 	}
@@ -52,8 +52,11 @@ public class Feat {
 	}
 	public void setFeatPrerequisite(Feat feat)
 	{
-		featPrerequisite[prereqCount] = feat;
-		prereqCount ++;
+		featPrerequisite.add(feat);
+	}
+	private void setStatPrereq(int stat, int prereq)
+	{
+		this.statPrerequisite[stat] = prereq;
 	}
 	public void setBenefit(Benefit benefit)
 	{

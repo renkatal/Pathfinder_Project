@@ -1,5 +1,4 @@
 package pthfndr.src.main;
-
 public class Skill {
 	public static final byte	ACROBATICS = 0, APPRAISE = 1, BLUFF = 2, // int values of skills for use in arrays
 						CLIMB = 3, CRAFT = 4, DIPLOMACY = 5, 
@@ -11,9 +10,9 @@ public class Skill {
 						SPELLCRAFT = 21, STEALTH = 22, SURVIVAL = 23,
 						SWIM = 24, USE_MAGIC_DEVICE = 25;
 	public static final int	RANK = 0, BONUS = 1, RACE_BONUS = 2;
-	public int check(byte skill, Creature creature) // regular skill check
+	public int check(int skill, Creature creature) // regular skill check
 	{ return Stat.bonus(stat(skill)) + creature.getSkillRank(skill);} // need to add class skill bonus and racial modifyers, and feat bonus.
-	public int check(byte skill, byte subSkill, Creature creature) // skill(subskill) check
+	public int check(int skill, int subSkill, Creature creature) // skill(subskill) check
 	{ return Stat.bonus(stat(skill)) + creature.getSkillRank(skill,subSkill);} // ditto
 	
 	public static boolean untrained(int skill, Class classPC)
@@ -36,7 +35,7 @@ public class Skill {
 			{return Stat.CHA;}
 		}
 		else
-			System.out.println("Something has gone wrong, the gnomes are working on it.");
+			Junk.error();
 			return -1;
 	}
 	public static class craft

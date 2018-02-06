@@ -1,45 +1,34 @@
 package pthfndr.src.main;
-import java.lang.Math;
-//class for generating random numbers and stats//
-public class Roll { 
-	//the d method is for rolling dice of a specific size//
-	public static int d(int size)
+
+public class Roll {
+
+	public static String random (String[] hold)
 	{
-		return (int) (Math.random() * size + 1);
+		return hold[d(hold.length)-1];
 	}
-	// method for creating one stat roll for a player character//
-	public static int PCstatRoll()
+	public static int d(int x)
 	{
-		int stats[] = {d(6),d(6),d(6),d(6)};
-		
-		int sum = 0;
-		for (int i = 0; i < 4; i ++)
-		{
-			sum += stats[i];
-		}
-		
-		int least = 6; // holds the lowest value number
-		for (int i = 0; i < 4; i ++)
-		{
-			if(stats[i] < least)
-			{
-				least = stats[i];
-			}
-		}
-		
-		return sum - least; //returns the highest three rolls
-	}
-	//method for creating a single Non Player Character stat roll//
-	public static int NPCstatRoll()
-	{
-		return d(6) + d(6) + d(6);
+		return (int) (Math.random()*x + 1);
 	}
 	
-	public static int minnimum(int value, int min)
+	public static int statRoll()
 	{
-		if (value < min)
-			return min;
-		return value;
+		int stat;
+		int sum = 0;
+		int min = 6;
+		int[] roll ={d(6),d(6),d(6),d(6)};
+		for (int i= 0;i < 4; i ++)
+		{
+			if (roll[i] < min)
+			{
+				min = roll[i];
+			}
+			sum += roll[i]; 
+			//System.out.print(roll[i] + " : "); // check roll
+		}
+		stat = sum - min;
+		//System.out.print(stat + "\n"); // check stat
+		return stat;
 	}
 	public static int numDsize(int num, int size)
 	{
@@ -54,14 +43,20 @@ public class Roll {
 		return sum;
 	}
 	
-	public static String random (String[] hold)
+	public static int minnimum(int value, int min)
 	{
-		return hold[d(hold.length)-1];
+		if (value < min)
+			return min;
+		return value;
 	}
 
-	public static void main(String[] args) {
-		for( int i = 0; i <= 100; i++)
-		System.out.println(Roll.NPCstatRoll());
+	
+	public static void main(String[]args)
+	{
+		for (int i = 0; i < 10; i ++)
+		System.out.println(d(20));
+		statRoll();
+		statRoll();
+		
 	}
-
 }

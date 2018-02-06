@@ -1,5 +1,4 @@
 package pthfndr.src.main;
-
 class Subtype {
 	public static final int AIR = 0, ANGEL = 1, AQUATIC = 2, ARCHON = 3, AUGMENTED = 4, 
 			AZATA = 5, CHAOTIC = 6, COLD = 7, DEMON = 8, DEVIL = 9, 
