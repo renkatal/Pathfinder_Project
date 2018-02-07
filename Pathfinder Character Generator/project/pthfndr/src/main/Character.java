@@ -1,13 +1,14 @@
 package pthfndr.src.main;
-public class Character extends Creature {
+
+import java.util.ArrayList;
+
+public class Character extends Creature implements Race {
 
 	private int race;
 	private String name;
-	private int[] classType;
+	private ArrayList<Class> ClassList;
 	private int totalLevel;
-	private int[] classLevel;
 	private boolean alive;
-	private int[] importantStats;
 	private int height;
 	private int weight;
 	private String eyeColor;
@@ -19,36 +20,13 @@ public class Character extends Creature {
 	
 	public Character ()
 	{
-		this.race = 0;
-		this.name = "Generic Character";
+		
 	}
-	public Character (String name, int strength, int dexterity, int constitution, int intelligence , int wisdom ,int charisma, int currentHP, int maxHP, boolean alive)
+	public Character (String name, int[] stats, int maxHP)
 	{
-		
-		
 		this.name = name;
-		this.setStat(Stat.CON,constitution);
-		this.setStat(Stat.INT,intelligence);
-	
+		this.setStats(stats);
 		
-	}
-	
-	
-	public int getStatImportance(int stat)
-	{ 
-		return importantStats[stat];
-	}
-	public int getMostImportantStat()
-	{
-		int tell = 0;
-		for (int i =0; i < 6; i++)
-		{
-			if (this.importantStats[i] == 1)
-			{
-				tell = i;
-			}
-		}
-		return tell;
 	}
 	
     public String getName() {
@@ -91,6 +69,30 @@ public class Character extends Creature {
 	}
 	public static void main(String[] args) {
 		System.out.print(Name.stat[Stat.STR]);
+		
+	}
+	public void addBonus(int race) {
+		for(int i = 0; i < this.getStats().length; i++)
+		{
+			this.setStat(i, this.getStat(i) + Race.BONUS[race][i]);
+		}
+		
+	}
+	@Override
+	public void characterRaceSize(int race) {
+		if(race == GNOME || race == HALFLING)
+		{
+			this.setSize(SMALL);
+		}
+		else
+		{ 
+			this.setSize(MEDIUM);
+		}
+		
+	}
+	@Override
+	public void raceSpeed(int race) {
+		// TODO Auto-generated method stub
 		
 	}
 	

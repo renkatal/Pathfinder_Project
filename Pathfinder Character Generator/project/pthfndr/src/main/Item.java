@@ -1,5 +1,5 @@
 package pthfndr.src.main;
-public class Item {
+public class Item implements Size {
 	public class Condition 
 	{
 		public final int PERFECT = 0, GOOD = 1, FAIR = 2, POOR = 3, BROKEN = 5, DESTROYED = 6;

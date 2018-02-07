@@ -1,5 +1,5 @@
 package pthfndr.src.main;
-public class Skill {
+public interface Skill {
 	public static final byte	ACROBATICS = 0, APPRAISE = 1, BLUFF = 2, // int values of skills for use in arrays
 						CLIMB = 3, CRAFT = 4, DIPLOMACY = 5, 
 						DISABLE_DEVICE = 6, DISGUISE = 7, ESCAPE_ARTIST = 8, 
@@ -10,16 +10,18 @@ public class Skill {
 						SPELLCRAFT = 21, STEALTH = 22, SURVIVAL = 23,
 						SWIM = 24, USE_MAGIC_DEVICE = 25;
 	public static final int	RANK = 0, BONUS = 1, RACE_BONUS = 2;
-	public int check(int skill, Creature creature) // regular skill check
-	{ return Stat.bonus(stat(skill)) + creature.getSkillRank(skill);} // need to add class skill bonus and racial modifyers, and feat bonus.
-	public int check(int skill, int subSkill, Creature creature) // skill(subskill) check
-	{ return Stat.bonus(stat(skill)) + creature.getSkillRank(skill,subSkill);} // ditto
-	
-	public static boolean untrained(int skill, Class classPC)
+	public int skillCheck(byte skill); // regular skill check
+	// need to add class skill bonus and racial modifyers, and feat bonus.
+	public int skillCheck(byte skill, byte subSkill); // skill(subskill) check
+	public static boolean untrained(byte skill) // returns true if a skill can be used untrained
 	{
-		return false;
+		if(skill == DISABLE_DEVICE || skill == HANDLE_ANIMAL || skill == KNOWLEDGE || skill == LINGUISTICS || skill == PROFFESSION || skill == SLEIGHT_OF_HAND || skill == SPELLCRAFT || skill == USE_MAGIC_DEVICE)
+		{
+			return false;
+		}
+			return true;
 	};
-	public int stat(int skill) // returns the stat array position value associated with a skill, for use in other methods.
+	public static int stat(int skill) // returns the stat array position value associated with a skill, for use in other methods.
 	{
 		if ( 0 >= skill && skill <= 25)
 		{
@@ -35,7 +37,6 @@ public class Skill {
 			{return Stat.CHA;}
 		}
 		else
-			Junk.error();
 			return -1;
 	}
 	public static class craft

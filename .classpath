@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="Pathfinder Character Generator/project"/>
+	<classpathentry kind="output" path="Pathfinder Character Generator/project"/>
+</classpath>

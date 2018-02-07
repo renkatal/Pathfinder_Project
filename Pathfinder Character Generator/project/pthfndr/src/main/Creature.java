@@ -1,7 +1,7 @@
 package pthfndr.src.main;
 import java.util.ArrayList;
 
-public class Creature {
+public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat {
 	private String creatureName;
 	private int type;
 	private boolean[] subtypes = new boolean[Subtype.maxNumber()];
@@ -49,7 +49,6 @@ public class Creature {
 	private Sheild sheild;
 	private Item[] held;
 	
-	
 	class Slot {
 	public static final int HEAD = 0, HEADBAND = 1, EYES = 2, SHOULDERS = 3, NECK = 4, CHEST = 5, ARMOR = 6, BELT = 7, WRISTS = 8, HANDS = 9, RING1 = 10, RING2 = 11;
 	}
@@ -64,9 +63,7 @@ public class Creature {
 	}
 	public Creature()
 	{
-		this.creatureName = "Human";
-		this.type = Type.HUMANOID;
-		new Subtype(this, Subtype.HUMAN);
+		
 	}
 
 	// creature name getters and setters
@@ -192,6 +189,10 @@ public class Creature {
 	public void setSkillBonus(byte skill, byte subskill, byte amount)
 	{
 		this.skill[Skill.BONUS][skill][subskill] = amount;
+	}
+	public int getSkillRaceBonus(byte skill)
+	{
+		return (int) this.skill[Skill.RACE_BONUS][skill][0];
 	}
 	public void setSkillRaceBonus(byte skill, byte amount)
 	{
@@ -511,10 +512,39 @@ public class Creature {
 	{
 		this.sheild = sheild;
 	}
+	
 
-	public static void main(String[] args) {
+
+	@Override
+	public void addCondition(int condition) {
+		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void removeCondition(int condition) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args) {
+	Creature creature = new Creature();
+	creature.setSize(MEDIUM);
+	System.out.println(Size.modifier(creature.getSize()));
 
 	}
+
+	@Override
+	public int skillCheck(byte skill) {
+		return this.getSkillBonus(skill) + Stat.bonus(this.getStat(Skill.stat(skill))) + this.getSkillRaceBonus(skill);
+	}
+
+
+	@Override
+	public int skillCheck(byte skill, byte subSkill) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }

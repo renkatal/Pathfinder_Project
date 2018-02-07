@@ -55,10 +55,11 @@ public class Armor extends Item {
 	}
 	public void setName(String name)
 	{
-		this.name = "";
+		String hold = "";
 		if (masterwork == true)
-			this.name += "Masterwork ";
-		this.name += name;
+			hold += "Masterwork ";
+		hold += name;
+		this.name = hold;
 	}
 	public int getArmorClassBonus()
 	{
@@ -98,7 +99,7 @@ public class Armor extends Item {
 		Armor None = new Armor("None", ArmorType.NONE, 0, -1, 0, 0, 0, 0, Material.NONE, creature.getSize(), creature.getType(), false);
 		return None;
 	}
-	Armor Padded = new Armor("Padded",ArmorType.LIGHT,1,8,0,5,10,5,Material.CLOTH,Size.MEDIUM,Type.HUMANOID,false);
+	//Armor Padded = new Armor("Padded",ArmorType.LIGHT,1,8,0,5,10,5,Material.CLOTH,Size.MEDIUM,Type.HUMANOID,false);
 	//Armor Leather = new Armor("Leather",ArmorType.LIGHT,2,6,0,10,15,10,Material.LEATHER,Size.MEDIUM,Type.HUMANOID,false);
 	
 }

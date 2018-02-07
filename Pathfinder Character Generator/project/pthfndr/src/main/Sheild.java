@@ -89,7 +89,7 @@ public class Sheild extends Item{
 		if (creature.checkHolding(appendage) == false)
 		{
 			creature.holdItem(appendage, sheild);
-			creature.setShield(sheild);
+			creature.setSheild(sheild);
 			sheild.speed(creature);
 		}
 	}

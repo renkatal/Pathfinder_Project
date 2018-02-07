@@ -12,6 +12,7 @@ public class Name {
 	}
 	static class Class {
 		public static final String[] PC = { "Barbarian", "Bard",  "Cleric", "Druid", "Fighter", "Monk","Paladin", "Ranger", "Rogue","Wizard","Sorcerer"};
+		public static final String[] NPC = { "Adept", "Aristocrat", "Commoner", "Expert", "Warrior" };
 	}
 	public static void main(String[] args) {
 	
