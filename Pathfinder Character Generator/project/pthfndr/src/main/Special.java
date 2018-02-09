@@ -1,47 +1,66 @@
 package pthfndr.src.main;
-public class Special {
-	class Attack
-	{
-		public void AbilityDamage(int stat,Creature target, int damage)
-		{
-			target.setTempStatAdjusment(stat, Roll.d(damage));
+
+import pthfndr.src.main.Magic.Desciptor;
+
+public class Special implements Magic.Desciptor{
+	private String name;
+	public String getName() {
+		return this.name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Special(String name) {
+		this.setName(name);
+	}
+	public static class ExtraordinayAblitiy extends Special {
+		public ExtraordinayAblitiy(String name) {
+			super(name);
 		}
-		public void AbilityDrain(int stat,Creature target, int damage)
-		{
-			target.setTempStatAdjusment(stat, Roll.d(damage));
-		}
-		public void BreathWeapon(int range, int shape, int damageType)
-		{
-			
+		public static class Regeneration extends Special {
+			public Regeneration(byte rate) {
+				super("Regeneration");
+				this.setRate(rate);
+			}
+			public Regeneration() {
+				super("Regeneration");
+			}
+			private byte rate;
+			public byte getRate() {
+				return rate;
+			}
+			public void setRate(byte rate) {
+				this.rate = rate;
+			}
+			public static Special regeneration = new Regeneration();
 		}
 	}
-	static class Quality
-	{
+	
+	public class SpellLikeAblitiy extends Special {
+
+		public SpellLikeAblitiy(String name) {
+			super(name);
+			// TODO Auto-generated constructor stub
+		}
 		
-		public static Special Regeneration;
-		public void Amphibious(Creature creature)
-		{
-			creature.breathAir(true);
-			creature.breathWater(true);
-		}
-		public void Blindsense(int range)
-		{
-			
-		}
-		public void Blindsight(int range)
-		{
-			
-		}
-		public static class Regeneration
-		{
-			Regeneration(int rate, Creature creature) {
+		public class EnergyBurst extends Special {
+			public EnergyBurst(byte type){
+				super("");
+				if(type == FIRE)
+				{           }
 			}
-			
 		}
-		
 		
 	}
 	
+	public class SupernaturalAbilitiy extends Special {
+
+		public SupernaturalAbilitiy(String name) {
+			super(name);
+			// TODO Auto-generated constructor stub
+		}
+		
+	}
 	public static boolean check(Creature creature, Special special)
 	{
 		boolean check = false;
@@ -53,6 +72,13 @@ public class Special {
 			}
 		}
 		return check;
+	}
+	
+	public boolean equals(Special x)
+	{
+		if(this.getName() == x.getName())
+			return true;
+		return false;
 	}
 	
 	public static void main(String[] args) {

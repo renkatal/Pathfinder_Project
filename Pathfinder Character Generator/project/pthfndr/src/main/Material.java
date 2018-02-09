@@ -1,6 +1,6 @@
 package pthfndr.src.main;
 
-public class Material {
+public interface Material {
 	public static final int NONE = -1, GLASS = 0, PAPER = 1, CLOTH = 2, ROPE = 3, ICE = 4, LEATHER = 5, HIDE = 6, WOOD = 7, STONE = 8, IRON = 9, STEEL = 10, MITHRAL = 11, ADAMANTINE = 12;
 	public static int hardness(int material)
 	{

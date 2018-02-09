@@ -1,6 +1,6 @@
 package pthfndr.src.main;
 
-public class Name {
+public interface Name {
 	public static final String[] stat = {"Strength","Dexterity","Constitution","Intelligence","Wisdom","Charisma"};
 	public static final String[] statAbbrv = {"STR","DEX","CON","INT","WIS","CHA"};
 	public static final String[] race = {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Halfling"};

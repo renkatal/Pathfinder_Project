@@ -339,7 +339,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	}
 	public void setNonLeathalDMG(int damage)
 	{
-		if  (Special.check(this, Special.Quality.Regeneration) == false && this.nonleathalDmg == this.maxHP)
+		if  (Special.check(this, Special.ExtraordinayAblitiy.Regeneration.regeneration) == false && this.nonleathalDmg == this.maxHP)
 		{	this.currentHP -= damage;}
 		else
 		{	this.nonleathalDmg += damage;}
