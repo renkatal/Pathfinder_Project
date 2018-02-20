@@ -101,6 +101,10 @@ public class Item implements Size {
 			return this.count;
 		}
 		
+		public double getWeight() {
+			return this.getType().getWeight() * count;
+		}
+		
 		//Adding and removing methods
 		public void addItem(Item item) {
 			if(item.equals(type)) {
@@ -122,6 +126,23 @@ public class Item implements Size {
 			Stack split = new Stack(this.type,count);
 			this.count -= count;
 			return split;
+		}
+		
+	}
+	
+	public class Mass extends Item {
+		
+		public Mass(Item type, double quantity) {
+			
+		}
+		private Item type;
+		private double quantity;
+		
+		public void setType(Item type){
+			this.type = type;
+		}
+		public Item getType() {
+			return this.type;
 		}
 		
 	}
