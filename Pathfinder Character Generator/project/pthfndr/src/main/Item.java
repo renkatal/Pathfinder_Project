@@ -2,11 +2,7 @@ package pthfndr.src.main;
 
 import java.util.ArrayList;
 
-public class Item implements Size {
-	public interface Condition 
-	{
-		public final int PERFECT = 0, GOOD = 1, FAIR = 2, POOR = 3, BROKEN = 5, DESTROYED = 6;
-	}
+public class Item implements Size,Material,Condition {
 	public Item()
 	{
 		
@@ -20,6 +16,7 @@ public class Item implements Size {
 		this.setCost(cost);
 		this.setWeight(weight);
 		this.currentHP = this.maxHP;
+		this.setArmorClass();
 	}
 	private String name;
 	private int armorClass; // items own armor class
@@ -28,7 +25,7 @@ public class Item implements Size {
 	private int hardness; // items resistance to damage
 	private double cost; // cost in gold pieces
 	private double weight; // weight of item in pounds
-	private int condition; //good , broken, destroyed, detemined by current hit points.
+	private int condition = -1; //good , broken, destroyed, detemined by current hit points.
 	private int itemSize; //for item size NOT character size
 	private int material; // item material, determines hardness and hitpoints
 	private double thickness; // items thickness in inces for use to determine hitpoints
@@ -38,12 +35,16 @@ public class Item implements Size {
 	private int accumulatedDamage; // holds accumulated damage for the aging fucntion
 	private boolean stackable;
 	private boolean massable;
+	private boolean tradeGood;
 	
 	public class Container extends Item {
 
 		public Container(String name, int Size, int Material, double cost, double weight, double thickness, double capacity) {
 			super(name, Size, Material, cost, weight, thickness);
 			this.setCapacity(capacity);
+			this.setMassable(false);
+			this.setTrade(false);
+			this.setStackable(false);
 		}
 		
 		private ArrayList<Item> contents = new ArrayList<>();
@@ -73,6 +74,16 @@ public class Item implements Size {
 					return;
 				}
 		}
+		public double getWeight() {
+			double value = weight;
+			if (contents.get(0) != null)
+			{
+				for(int i = 0; i < contents.size(); i++) {
+					weight += contents.get(i).getWeight();
+				}
+			}
+			return value;
+		}
 		
 	}
 	
@@ -80,6 +91,9 @@ public class Item implements Size {
 
 		public Stack(Item item, int count) {
 			super();
+			this.setStackable(false);
+			this.setMassable(false);
+			this.setTrade(item.isTradeGood());
 			this.setType(item);
 			this.setCount(count);
 		}
@@ -133,7 +147,8 @@ public class Item implements Size {
 	public class Mass extends Item {
 		
 		public Mass(Item type, double quantity) {
-			
+			this.setType(type);
+			this.setQuantity(quantity);
 		}
 		private Item type;
 		private double quantity;
@@ -144,6 +159,63 @@ public class Item implements Size {
 		public Item getType() {
 			return this.type;
 		}
+		public void setQuantity(double quantity) {
+			this.quantity = quantity;
+		}
+		public double getQuantity() {
+			return this.quantity;
+		}
+		public Mass pile(Item item) {
+			if(item.isMassable()) {
+				return new Mass(item,item.getWeight());
+			}
+			return null;
+		}
+		public Mass splitMass(Mass mass, double quantity) {
+			mass.reduceMass(quantity);
+			return new Mass(mass.getType(), quantity);
+		}
+		public void reduceMass(double quantity) {
+			if (this.getQuantity() >= quantity) {
+				this.setQuantity(this.getQuantity() - quantity);
+			}
+		}
+		public void increaseMass(double quantity) {
+			this.setQuantity(this.getQuantity() + quantity);
+		}
+		public double getWeight() {
+			return this.quantity * this.type.getWeight();
+		}
+		
+	}
+	
+	public static class Coin extends Item {
+		public Coin(int material) {
+			super(Name.material[material] + " Coin",FINE,material,value(material),0.02,Material.coinThickness(material));
+			this.setTrade(true);
+			this.setStackable(true);
+			this.setMassable(false);
+			
+		}
+		public static double value(int material) {
+			switch (material) {
+			case COPPER:
+				return 0.01;
+			case SILVER:
+				return 0.1;
+			case GOLD:
+				return 1.0;
+			case PLATINUM:
+				return 10.0;
+			default:
+				break;
+			}
+			return 0.0;
+		}
+		public static final Coin copper = new Coin(COPPER);
+		public static final Coin silver = new Coin(SILVER);
+		public static final Coin gold = new Coin(GOLD);
+		public static final Coin platnium = new Coin(PLATINUM);
 		
 	}
 	
@@ -160,7 +232,7 @@ public class Item implements Size {
 		return armorClass;
 	}
 	public void setArmorClass() {
-		this.armorClass = 8 + Size.modifier(itemSize) - this.dexMod ;
+		this.armorClass = 10 + Size.modifier(itemSize) + this.dexMod ;
 	}
 	
 	//Hit Point getters and setters
@@ -169,14 +241,17 @@ public class Item implements Size {
 	}
 	public void damageItem(int damage) {
 		this.currentHP -= Math.max((damage - this.hardness),0);
-		if (this.currentHP < 0)
+		if (this.currentHP < 0) {
 			this.currentHP = 0;
+		}
+		this.setCondition();
 	}
 	public void repairItem(int repair) {
 		if (this.currentHP != this.maxHP)
 		this.currentHP += repair;
-		if (this.currentHP > this.maxHP)
+		if (this.currentHP > this.maxHP) 
 			this.currentHP = this.maxHP;
+		this.setCondition();
 	}
 	public int getMaxHP() {
 		return maxHP;
@@ -213,8 +288,16 @@ public class Item implements Size {
 	public int getCondition() {
 		return condition;
 	}
-	public void setCondition(int condition) {
-		this.condition = condition;
+	public void setCondition() {
+		if(this.getCurrentHP() >= 0.5 * this.getMaxHP()) {
+			this.removeCondition(BROKEN);
+		}
+		else if(this.getCurrentHP() < 0.5 * this.getCurrentHP()) {
+			this.addCondition(BROKEN);
+		}
+		else if(this.currentHP == 0) {
+			this.addCondition(DESTROYED);
+		}
 	}
 
 	//Size getters and setters
@@ -258,6 +341,14 @@ public class Item implements Size {
 	}
 	public boolean isMassable() {
 		return massable;
+	}
+	
+	//trade good methods
+	public void setTrade(boolean value) {
+		this.tradeGood = value;
+	}
+	public boolean isTradeGood() {
+		return tradeGood;
 	}
 	
 	public void held(Creature creature)
@@ -334,16 +425,31 @@ public class Item implements Size {
 
 
 	public static void main(String[] args) {
-		Item test = new Item("test",Size.DIMINUTIVE,Material.IRON,30,20,1);
 	
-		while (test.currentHP > 0)
-		test.ageItem(test, 1);
 		
+
+		System.out.println(Coin.copper.getArmorClass());
+		System.out.println(Coin.silver.getThickness());
+		System.out.println(Coin.gold.getThickness());
+		System.out.println(Coin.platnium.getThickness());
+
 		
 		
 		//System.out.println(Item.testAgeing(test));
 		// TODO Auto-generated method stub
 
+	}
+	@Override
+	public void addCondition(int condition) {
+		this.condition = condition;
+		
+	}
+	@Override
+	public void removeCondition(int condition) {
+		if (this.condition == condition) {
+			this.condition = -1;
+		}
+		
 	}
 
 }
