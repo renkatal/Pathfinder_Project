@@ -36,6 +36,7 @@ public class Item implements Size,Material,Condition {
 	private boolean stackable;
 	private boolean massable;
 	private boolean tradeGood;
+	private int slot;
 	
 	public static class Container extends Item {
 
@@ -168,6 +169,7 @@ public class Item implements Size,Material,Condition {
 		public double getQuantity() {
 			return this.quantity;
 		}
+
 		public Mass pile(Item item) {
 			if(item.isMassable()) {
 				return new Mass(item,item.getWeight());
@@ -219,6 +221,7 @@ public class Item implements Size,Material,Condition {
 		public static final Coin silver = new Coin(SILVER);
 		public static final Coin gold = new Coin(GOLD);
 		public static final Coin platnium = new Coin(PLATINUM);
+
 		
 	}
 	
@@ -424,6 +427,13 @@ public class Item implements Size,Material,Condition {
 		while(item.currentHP > 0 && item.age < 10000000)
 			item.ageItem(item,1);
 		return item.age;
+	}
+	
+	public void setSlot(int slot) {
+		this.slot = slot;
+	}
+	public int getSlot() {
+		return this.slot;
 	}
 
 

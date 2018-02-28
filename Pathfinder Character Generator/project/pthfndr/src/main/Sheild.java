@@ -1,5 +1,5 @@
 package pthfndr.src.main;
-public class Sheild extends Item{
+public class Sheild extends Item {
 	private static double thicness;
 	public Sheild(String name, int type, int ACbonus, int maxDex, int checkPenalty, int spellFalure, int weight, int cost, int material, int creatureSize, int creatureType, boolean masterwork)
 	{

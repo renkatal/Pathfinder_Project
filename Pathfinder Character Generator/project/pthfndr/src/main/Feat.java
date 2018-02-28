@@ -54,9 +54,13 @@ public class Feat {
 	{
 		featPrerequisite.add(feat);
 	}
-	private void setStatPrereq(int stat, int prereq)
+	public void setStatPrereq(int stat, int prereq)
 	{
 		this.statPrerequisite[stat] = prereq;
+	}
+	public Benefit getBenefit()
+	{
+		return this.benefit;
 	}
 	public void setBenefit(Benefit benefit)
 	{

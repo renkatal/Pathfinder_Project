@@ -1,7 +1,7 @@
 package pthfndr.src.main;
 import java.util.ArrayList;
 
-public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat {
+public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,Anatomy,Slot,Language,Environment {
 	private String creatureName;
 	private int type;
 	private boolean[] subtypes = new boolean[Subtype.maxNumber()];
@@ -19,26 +19,24 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	private int[] resistances;
 	private boolean[] weaknesses;
 	private int[] speed;
-	private  ArrayList<Weapon> melee = new ArrayList<>();
+	private ArrayList<Weapon> melee = new ArrayList<>();
 	private ArrayList<Weapon> ranged = new ArrayList<>();
 	private int space;
 	private int reach;
 	private boolean[] breath;
-	private int[] specialAttacks;
-	private int[] spellLikeAblilites;
-	private int[] spellsKnownPrepared;
+	private ArrayList<Special> spellLikeAblilites = new ArrayList<>();
 	private int[] stats = new int[6];
 	private int[] tempStatAjustment = {0,0,0,0,0,0};
 	private int baseAttack;
 	private int combatManuverBonus;
 	private int combatManuverDefense;
 	private ArrayList<Feat> feats = new ArrayList<>();
-	private boolean[] classSkills;
+	private boolean[][] classSkills;
 	private byte[][][] skill;
 	private int skillPoints;
 	private boolean[] Language;
 	private ArrayList<Special> specialQualities;
-	private boolean[] environment;
+	private boolean[][] environment;
 	private ArrayList<Item> inventory;
 	private ArrayList<Special> specialAbilities;
 	private boolean[] conditions;
@@ -49,22 +47,10 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	private Sheild sheild;
 	private Item[] held;
 	
-	class Slot {
-	public static final int HEAD = 0, HEADBAND = 1, EYES = 2, SHOULDERS = 3, NECK = 4, CHEST = 5, ARMOR = 6, BELT = 7, WRISTS = 8, HANDS = 9, RING1 = 10, RING2 = 11;
-	}
-	class Hand {
-		public static final int OFF = 0, MAIN = 1;
-	}
-	class Anatomy {
-		public static final int HEAD = 0, BODY = 1, LEG = 2, FOOT = 3, ARM = 4, HAND = 5, WING = 6, PAW = 7, TENTICLE = 8, EYE = 9, MOUTH = 10, EAR = 11, FIN = 12, HOOF = 13, BEAK = 14, NOSE = 15, CLAW = 16;
-	}
-	class SavingThrow {
+	interface SavingThrow {
 		public static final int FORTITUDE = 0, REFLEX = 1, WILL = 2;
 	}
-	public Creature()
-	{
-		
-	}
+	public Creature() {}
 
 	// creature name getters and setters
 	public void setCreatureName(String name)
@@ -145,7 +131,42 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 		return tempStatAjustment[stat];
 	}
 	
+	public void setBAB(int BAB) {
+		this.baseAttack = BAB;
+	}
+	public int getBAB() {
+		return this.baseAttack;
+	}
+	
+	public void setCMB(int CMB) {
+		this.combatManuverBonus = CMB;
+	}
+	public int getCMB() {
+		return this.combatManuverBonus;
+	}
+	
+	public void seCMD(int CMD) {
+		this.combatManuverDefense = CMD;
+	}
+	public int getCMD() {
+		return this.combatManuverDefense;
+	}
+	
+	public void addFeat(Feat feat) {
+		this.feats.add(feat);
+	}
+	public ArrayList<Feat> getFeats() {
+		return this.feats;
+	}
+	
 	// Skill rank getters and setters and methods
+	public void setClassSkill(int skill, boolean value) {
+		this.classSkills[skill][0] = value;
+	}
+	public void setClassSkill(int skill, int subskill, boolean value) {
+		this.classSkills[skill][subskill] = value;
+	}
+	
 	public void incrimentSkillRank(byte skill) // increments a skill rank in a skill
 	{
 		if ( skillPoints > 0 )
@@ -194,6 +215,10 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	{
 		return (int) this.skill[Skill.RACE_BONUS][skill][0];
 	}
+	public int getSkillRaceBonus(byte skill, byte subskill)
+	{
+		return (int) this.skill[Skill.RACE_BONUS][skill][subskill];
+	}
 	public void setSkillRaceBonus(byte skill, byte amount)
 	{
 		this.skill[Skill.RACE_BONUS][skill][0] = amount;
@@ -202,11 +227,46 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	{
 		this.skill[Skill.RACE_BONUS][skill][subskill] = amount;
 	}
-	public int getSkillRaceBonus(byte skill, byte subskill)
-	{
-		return (int) this.skill[Skill.RACE_BONUS][skill][subskill];
+	
+	
+	@Override
+	public int skillCheck(byte skill) {
+		return this.getSkillRank(skill) + this.getSkillBonus(skill) + Stat.bonus(this.getStat(Skill.stat(skill))) + this.getSkillRaceBonus(skill);
+	}
+
+	@Override
+	public int skillCheck(byte skill, byte subSkill) {
+		return this.getSkillRank(skill, subSkill) + getSkillBonus(skill, subSkill) + Stat.bonus(this.getStat(Skill.stat(skill))) + this.getSkillRaceBonus(skill, subSkill);
 	}
 	
+	public void setLanguage(int language) {
+		this.Language[language] = true;
+	}
+	public void removeLanguage(int language) {
+		this.Language[language] = false;
+	}
+	public boolean knowsLanguage(int language) {
+		return this.Language[language];
+	}
+	
+	public void addSpecailQuality(Special special) {
+		this.specialQualities.add(special);
+	}
+	public ArrayList<Special> getSpecialQualities() {
+		return this.specialQualities;
+	}
+	
+	//environment methods
+	public void setEnvironment(int climate, int terrain) {
+		this.environment[climate][terrain] = true;
+	}
+	public boolean isEnviroment(int climate,int terrain) {
+		return this.environment[climate][terrain];
+	}
+	public void removeEnvironment(int climate, int terrain) {
+		this.environment[climate][terrain] = true;
+	}
+
 	//alignment getters and setters
 	public String getAligment()
 	{
@@ -234,18 +294,18 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 	public void setAligment(String order, String moral) // hard sets aligment value in the middle of their respecitve values
 		{
 			if( order == "Lawful" || order == "lawful")
-			{ this.alignment[0] = 250;}
+			{ this.alignment[ORDER] = LAW;}
 			else if (order == "Chaotic" || order == "chaotic")
-			{ this.alignment[0] = 50;}
+			{ this.alignment[ORDER] = CHAOS;}
 			else
-			{ this.alignment[0] = 150;}
+			{ this.alignment[ORDER] = NEUTRAL;}
 			
 			if( order == "Good" || moral == "good")
-			{ this.alignment[1] = 250;}
+			{ this.alignment[MORAL] = GOOD;}
 			else if (order == "Evil" || order == "evil")
-			{ this.alignment[1] = 50;}
+			{ this.alignment[MORAL] = EVIL;}
 			else
-			{ this.alignment[1] = 150;}
+			{ this.alignment[MORAL] = NEUTRAL;}
 		}
 
 	//sense getters and setters
@@ -403,6 +463,13 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 		this.breath[1] = x;
 	}
 	
+	public void addSpellLikeAblility(Special.SpellLikeAblitiy ability) {
+		this.spellLikeAblilites.add(ability);
+	}
+	public ArrayList<Special> getSpellLikeAbilities() {
+		return this.spellLikeAblilites;
+	}
+	
 	//speed getters and setters
 	public void setSpeed(int speed)
 	{
@@ -513,37 +580,83 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat 
 		this.sheild = sheild;
 	}
 	
-
-
+	
+	
 	@Override
 	public void addCondition(int condition) {
-		// TODO Auto-generated method stub
-		
+		this.conditions[condition] = true;
 	}
 
 	@Override
 	public void removeCondition(int condition) {
-		// TODO Auto-generated method stub
-		
+		this.conditions[condition] = false;
 	}
 	
+	public void setAnatomy(int type) {
+		switch (type) {
+		case HUMANOID:
+			this.anatomy[BODY] = 1;
+			this.anatomy[Anatomy.HEAD] = 1;
+			this.anatomy[EAR] = 2;
+			this.anatomy[EYE] = 2;
+			this.anatomy[MOUTH] = 1;
+			this.anatomy[NOSE] = 1;
+			this.anatomy[LEG] = 2;
+			this.anatomy[FOOT] = 2;
+			this.anatomy[ARM] = 2;
+			this.anatomy[HAND] = 2;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	//Slot mehtods
+	public void setSlot(Item item, int slot) {
+		if(item.getSlot() == slot) {
+			this.slot[slot] = item;
+		}
+	}
+	public Item getSlot(int slot) {
+		return this.slot[slot];
+	}
+	public Item emptySlot(int slot) {
+		Item hold = this.getSlot(slot);
+		if (hold != null) {
+			this.setSlot(null, slot);
+		}
+		return hold;
+	}
+	
+	public int getSpace() {
+		return space;
+	}
+
+	public void setSpace(int space) {
+		this.space = space;
+	}
+
+	public int getReach() {
+		return reach;
+	}
+
+	public void setReach(int reach) {
+		this.reach = reach;
+	}
+
+	public ArrayList<Weapon> getMelee() {
+		return melee;
+	}
+
+	public ArrayList<Weapon> getRanged() {
+		return ranged;
+	}
+
 	public static void main(String[] args) {
 	Creature creature = new Creature();
 	creature.setSize(MEDIUM);
 	System.out.println(Size.modifier(creature.getSize()));
 
-	}
-
-	@Override
-	public int skillCheck(byte skill) {
-		return this.getSkillBonus(skill) + Stat.bonus(this.getStat(Skill.stat(skill))) + this.getSkillRaceBonus(skill);
-	}
-
-
-	@Override
-	public int skillCheck(byte skill, byte subSkill) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	

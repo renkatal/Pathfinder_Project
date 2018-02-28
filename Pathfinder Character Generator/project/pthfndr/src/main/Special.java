@@ -1,7 +1,5 @@
 package pthfndr.src.main;
 
-import pthfndr.src.main.Magic.Desciptor;
-
 public class Special implements Magic.Desciptor{
 	private String name;
 	public String getName() {

@@ -48,5 +48,7 @@ public class Spell implements Alignment, Type, Magic, Time {
 			}
 		}
 	}
+	
 
+	
 }

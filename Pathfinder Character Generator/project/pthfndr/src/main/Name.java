@@ -7,6 +7,7 @@ public interface Name {
 	public static final String[] material = {"Glass", "Paper", "Cloth", "Rope", "Ice", "Leather", "Hide", "Wood", "Stone", "Iron", "Steel", "Mithral", "Adamantine","Copper","Silver", "Gold", "Platinum"};
 	public static final String[] type = {"Aberration", "Animal", "CONSTRUCT", "Dragon", "Fey", "Humanoid", "Magical Beast", "Monsterous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"};
 	public static final String[] condition = {"Bleed", "Blinded", "Broken", "Confused", "Cowering", "Dazed", "Dazzled", "Dead", "Deafened", "Disabled", "Dying", "Energy Drained", "Entangled", "Exhausted", "Fascinated", "Fatigued", "Flat-footed", "Frightened", "Grappled", "Helpless", "Incorporeal", "Invisible", "Nauseated", "Panicked", "Paralyzed", "Petrified", "Pinned", "Prone", "Shaken", "Sickened", "Stable", "Staggered", "Stunned", "Unconscious", "Destroyed"};
+	public static final String[] aura = {};
 	static class Alignment {
 		public static final String lawful = "Lawful", neutral = "Neutal", chaotic = "Chaotic", good = "Good", evil = "Evil";
 	}
