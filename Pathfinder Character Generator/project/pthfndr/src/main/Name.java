@@ -14,6 +14,18 @@ public interface Name {
 		public static final String[] PC = { "Barbarian", "Bard",  "Cleric", "Druid", "Fighter", "Monk","Paladin", "Ranger", "Rogue","Wizard","Sorcerer"};
 		public static final String[] NPC = { "Adept", "Aristocrat", "Commoner", "Expert", "Warrior" };
 	}
+	static class Magic {
+		public static final String[] school = {"Abjuration", "Conjuration", "Divination", "Enchantment", "Illusion", "Necromancy", "Transmutation", "Universal"};
+		static class subscool {
+			public static final String[] conjuaration = {"", "Calling", "Creation", "Healing", "Summoning", "Teleportation"};
+			public static final String[] divination = {"", "Scrying"};
+			public static final String[] enchantment = {"", "Charm", "Compulsion"};
+			public static final String[] illusion = {"", "Figment", "Glamer", "Pattern", "Phantasm", "Shadow"};
+			public static final String[] transmuation = {"", "Polymorph"};
+		}
+		public static final String[] descriptor = {"Acid", "Air", "Chaotic", "Cold", "Darkness", "Death", "Earth", "Electricity", "Evil", "Fear", "Fire", "Force", "Good", "Language Dependent", "Lawful", "Light", "Mind-Affecting", "Sonic", "Water"};
+	}
+	
 	public static void main(String[] args) {
 	
 		for (int i = 0; i < 4; i ++)

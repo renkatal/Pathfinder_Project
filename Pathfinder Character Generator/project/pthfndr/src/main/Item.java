@@ -24,7 +24,7 @@ public class Item implements Size,Material,Condition {
 	private int maxHP; // maximum hit points of the item, detemined by its material
 	private int hardness; // items resistance to damage
 	private double cost; // cost in gold pieces
-	private double weight; // weight of item in pounds
+	private static double weight; // weight of item in pounds
 	private int condition = -1; //good , broken, destroyed, detemined by current hit points.
 	private int itemSize; //for item size NOT character size
 	private int material; // item material, determines hardness and hitpoints
@@ -37,7 +37,7 @@ public class Item implements Size,Material,Condition {
 	private boolean massable;
 	private boolean tradeGood;
 	
-	public class Container extends Item {
+	public static class Container extends Item {
 
 		public Container(String name, int Size, int Material, double cost, double weight, double thickness, double capacity) {
 			super(name, Size, Material, cost, weight, thickness);
@@ -84,6 +84,9 @@ public class Item implements Size,Material,Condition {
 			}
 			return value;
 		}
+		
+		//static containers
+		public static final Container backpack = new Container("Backpack", Size.TINY, LEATHER, 2.0, 2, 1, 40.0);
 		
 	}
 	
