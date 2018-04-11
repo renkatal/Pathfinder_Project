@@ -1,7 +1,7 @@
 package pthfndr.src.main;
-public class Encumbrance {
+public interface Encumbrance {
 public static final int LIGHT = 0, MEDIUM = 1, HEAVY = 2, OVER = 3;
-public int check(Creature creature){
+public static int check(Creature creature){
 	double weight  = creature.getInventoryWeight();
 	int maxLoad = maxLoad(creature);
 	if (weight > maxLoad)
@@ -12,7 +12,7 @@ public int check(Creature creature){
 		return MEDIUM;
 	return LIGHT;
 }
-public void setSpeed(Creature creature)
+public static void setSpeed(Creature creature)
 {
 	int speed = creature.getSpeed();
 	if (speed == 30 && check(creature) > LIGHT && creature.getSubtypeValue(Subtype.DWARF) == false && creature.getSpeedMod() == 0)
@@ -24,7 +24,7 @@ public void setSpeed(Creature creature)
 		creature.setSpeedMod(-5);
 	}
 }
-public int maxDex(Creature creature)
+public static int maxDex(Creature creature)
 {
 	if (check(creature) == HEAVY)
 	{
@@ -37,7 +37,7 @@ public int maxDex(Creature creature)
 	return creature.dexBonus();
 	
 }
-public boolean lift(Creature creature, Item item)
+public static boolean lift(Creature creature, Item item)
 {
 	double weight = item.getWeight();
 	int maxLoad = maxLoad(creature);
@@ -49,7 +49,7 @@ public boolean lift(Creature creature, Item item)
 	return false;
 	
 }
-public boolean drag(Creature creature, Item item)
+public static boolean drag(Creature creature, Item item)
 {
 	double weight = item.getWeight();
 	int maxLoad = maxLoad(creature);
@@ -61,8 +61,8 @@ public static int maxLoad(Creature creature){
 	int x = creature.getStat(Stat.STR);
 	int sum = 0;
 	int multi = 0;
-	while (x >= 30)
-	{ x = x - 10; multi +=1; }
+	while (x >= 30)  // sets multiplier value
+	{ x = x - 10; multi +=1; }  
 	for (int i = 0; i < x; i ++)
 		{
 			sum += 10; // 10

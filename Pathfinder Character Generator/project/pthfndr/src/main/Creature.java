@@ -489,7 +489,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	
 	public int getSpeed()
 	{
-		return Roll.minnimum(this.speed[0],5);
+		return Roll.minnimum(this.speed[0] + Special.ExtraordinayAblitiy.FastMovement.bonus(this),5);
 	}
 	public void setSpeedMod(int mod)
 	{
@@ -500,7 +500,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 		return this.speed[5];
 	}
 	
-	//armor getters and setters
+	//armor methods
 	public Armor getArmor()
 	{
 		return this.armor;
@@ -524,6 +524,13 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	{
 		this.armorProficiency = armorProficiency;
 	}
+	public boolean checkArmorType(int type) {
+		if (this.getArmor().getType() == type) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	//intventory Methods
 	public int getInventroySize()

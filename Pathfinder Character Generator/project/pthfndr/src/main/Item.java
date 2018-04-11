@@ -286,8 +286,8 @@ public class Item implements Size,Material,Condition {
 	public double getWeight() {
 		return weight;
 	}
-	public void setWeight(double weight) {
-		this.weight = weight;
+	public void setWeight(double value) {
+		weight = value;
 	}
 
 	//Condition getters and setters

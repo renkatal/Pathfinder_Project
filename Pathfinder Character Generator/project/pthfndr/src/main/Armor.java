@@ -61,6 +61,9 @@ public class Armor extends Item {
 		hold += name;
 		this.name = hold;
 	}
+	public int getType() {
+		return this.type;
+	}
 	public int getArmorClassBonus()
 	{
 		if (this.creatureSize <= Size.TINY)
@@ -94,6 +97,7 @@ public class Armor extends Item {
 		else 
 			System.out.println("This armor will not fit you.");
 	}
+	
 	public static Armor None(Creature creature)
 	{
 		Armor None = new Armor("None", ArmorType.NONE, 0, -1, 0, 0, 0, 0, Material.NONE, creature.getSize(), creature.getType(), false);

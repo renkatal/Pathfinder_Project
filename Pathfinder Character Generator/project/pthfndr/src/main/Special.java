@@ -15,7 +15,26 @@ public class Special implements Magic.Desciptor{
 		public ExtraordinayAblitiy(String name) {
 			super(name);
 		}
-		public static class Regeneration extends Special {
+		
+		public static FastMovement fastMovement = new FastMovement();
+		
+		public static class FastMovement extends ExtraordinayAblitiy {
+			public FastMovement() {
+				super("Fast Movement");
+			}
+			
+			public static int bonus(Creature creature) {
+				if ( Special.check(creature, fastMovement) && creature.checkArmorType(Armor.ArmorType.HEAVY) == false && Encumbrance.check(creature) < Encumbrance.HEAVY ) {
+					return 10;
+				}
+				
+				return 0;
+			}
+			
+			
+			
+		}
+		public static class Regeneration extends ExtraordinayAblitiy {
 			public Regeneration(byte rate) {
 				super("Regeneration");
 				this.setRate(rate);
