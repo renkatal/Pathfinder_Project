@@ -4,6 +4,7 @@ public interface Size {
     public static final int FINE = 0, DIMINUTIVE = 1, TINY = 2, SMALL = 3,
     						MEDIUM = 4,
     						LARGE = 5, HUGE = 6, GARGANTUAN = 7, COLOSSAL = 8;
+    public static final String[] name = {"Fine", "Diminutive", "Tiny", "Small", "Medium", "Large", "Huge", "Gargantuan", "Colossal"};
     
     // size modifier
     public static int modifier(int size){

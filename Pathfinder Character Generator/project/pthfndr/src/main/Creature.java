@@ -24,7 +24,6 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	private int space;
 	private int reach;
 	private boolean[] breath;
-	private ArrayList<Special> spellLikeAblilites = new ArrayList<>();
 	private int[] stats = new int[6];
 	private int[] tempStatAjustment = {0,0,0,0,0,0};
 	private int baseAttack;
@@ -35,10 +34,9 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	private byte[][][] skill;
 	private int skillPoints;
 	private boolean[] Language;
-	private ArrayList<Special> specialQualities;
 	private boolean[][] environment;
 	private ArrayList<Item> inventory;
-	private ArrayList<Special> specialAbilities;
+	private ArrayList<Special> specialAbilities= new ArrayList<>();
 	private boolean[] conditions;
 	private int[] anatomy;
 	private Item[] slot;
@@ -249,13 +247,6 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 		return this.Language[language];
 	}
 	
-	public void addSpecailQuality(Special special) {
-		this.specialQualities.add(special);
-	}
-	public ArrayList<Special> getSpecialQualities() {
-		return this.specialQualities;
-	}
-	
 	//environment methods
 	public void setEnvironment(int climate, int terrain) {
 		this.environment[climate][terrain] = true;
@@ -399,7 +390,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	}
 	public void setNonLeathalDMG(int damage)
 	{
-		if  (Special.check(this, Special.ExtraordinayAblitiy.Regeneration.regeneration) == false && this.nonleathalDmg == this.maxHP)
+		if  (Special.check(this, Special.ExtraordinaryAblitiy.Regeneration.regeneration) == false && this.nonleathalDmg == this.maxHP)
 		{	this.currentHP -= damage;}
 		else
 		{	this.nonleathalDmg += damage;}
@@ -436,92 +427,76 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	}
 	
 	//Special methods
-	public int specialLength()
-	{
+	public ArrayList<Special> getSpecialAbilities() {
+		return this.specialAbilities;
+	}
+	public int specialLength() {
 		return specialAbilities.size();
 	}
-	public void newSpecial(Special special)
-	{
+	public void addSpecial(Special special) {
 		this.specialAbilities.add(special);
 	}
-	public Special getSpecial(int x)
-	{
+	public void addSpecails(ArrayList<Special> source) {
+		for (int i = 0; i < source.size(); i ++) {
+			this.addSpecial(source.get(i));
+		}
+	}
+	public Special getSpecial(int x) {
 		return specialAbilities.get(x);
 	}
 	
 	//breath getters and setters
-	public boolean getBreath(int type)
-	{
+	public boolean getBreath(int type) {
 		return this.breath[type];
 	}
-	public void breathAir(boolean x)
-	{
+	public void breathAir(boolean x) {
 		this.breath[0] = x;
 	}
-	public void breathWater(boolean x)
-	{
+	public void breathWater(boolean x) {
 		this.breath[1] = x;
 	}
 	
-	public void addSpellLikeAblility(Special.SpellLikeAblitiy ability) {
-		this.spellLikeAblilites.add(ability);
-	}
-	public ArrayList<Special> getSpellLikeAbilities() {
-		return this.spellLikeAblilites;
-	}
-	
 	//speed getters and setters
-	public void setSpeed(int speed)
-	{
+	public void setSpeed(int speed) {
 		this.speed[0] = speed;
 	}
-	public void setSwimSpeed(int speed)
-	{
+	public void setSwimSpeed(int speed) {
 		this.speed[1] = speed;
 	}
-	public void setBurrowSpeed(int speed)
-	{ 	this.speed[2] = speed;}
-	public void setFlySpeed (int speed, int manuvarability)
-	{
+	public void setBurrowSpeed(int speed) {
+		this.speed[2] = speed;
+	}
+	public void setFlySpeed (int speed, int manuvarability) {
 		this.speed[3] = speed;
 		this.speed[4] = manuvarability;
 	}
 	
-	public int getSpeed()
-	{
-		return Roll.minnimum(this.speed[0] + Special.ExtraordinayAblitiy.FastMovement.bonus(this),5);
+	public int getSpeed() {
+		return Roll.minnimum(this.speed[0] + Special.ExtraordinaryAblitiy.FastMovement.bonus(this),5);
 	}
-	public void setSpeedMod(int mod)
-	{
+	public void setSpeedMod(int mod) {
 		this.speed[5] = mod;
 	}
-	public int getSpeedMod()
-	{
+	public int getSpeedMod() {
 		return this.speed[5];
 	}
 	
 	//armor methods
-	public Armor getArmor()
-	{
+	public Armor getArmor() {
 		return this.armor;
 	}
-	public void donArmor(Armor armor)
-	{
+	public void donArmor(Armor armor) {
 		this.armor = armor;
 	}
-	public int dexBonus()
-	{
+	public int dexBonus() {
 		if (armor.getMaxDex() != -1 || armor.getMaxDex() < Stat.bonus(stats[Stat.DEX]))
 			return Stat.bonus(stats[Stat.DEX]);
 		return armor.getMaxDex();
-		
 	}
-	public int getArmorProficiency()
-	{
+	public int getArmorProficiency() {
 		return this.armorProficiency;
 	}
-	public void setArmorProficiency(int armorProficiency)
-	{
+	public void setArmorProficiency(int armorProficiency) {
 		this.armorProficiency = armorProficiency;
 	}
 	public boolean checkArmorType(int type) {
@@ -531,10 +506,8 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 		return false;
 	}
 	
-	
 	//intventory Methods
-	public int getInventroySize()
-	{
+	public int getInventroySize() {
 		return inventory.size();
 	}
 	public double getInventoryWeight()
@@ -658,7 +631,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	public ArrayList<Weapon> getRanged() {
 		return ranged;
 	}
-
+	
 	public static void main(String[] args) {
 	Creature creature = new Creature();
 	creature.setSize(MEDIUM);

@@ -3,10 +3,7 @@ package pthfndr.src.main;
 import java.util.ArrayList;
 
 public class Item implements Size,Material,Condition {
-	public Item()
-	{
-		
-	}
+	public Item() {}
 	public Item(String name, int Size, int Material, double cost, double weight, double thickness)
 	{
 		this.setName(name);
@@ -36,6 +33,7 @@ public class Item implements Size,Material,Condition {
 	private boolean stackable;
 	private boolean massable;
 	private boolean tradeGood;
+	private boolean masterwork;
 	private int slot;
 	
 	public static class Container extends Item {
@@ -355,6 +353,13 @@ public class Item implements Size,Material,Condition {
 	}
 	public boolean isTradeGood() {
 		return tradeGood;
+	}
+	
+	public void setMasterwork(boolean masterwork) {
+		this.masterwork = masterwork;
+	}
+	public boolean isMasterwork() {
+		return masterwork;
 	}
 	
 	public void held(Creature creature)

@@ -35,7 +35,7 @@ public static int maxDex(Creature creature)
 		return Math.min(creature.dexBonus(), 3);
 	}
 	return creature.dexBonus();
-	
+
 }
 public static boolean lift(Creature creature, Item item)
 {

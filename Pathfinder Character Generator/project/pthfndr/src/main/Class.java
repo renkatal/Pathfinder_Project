@@ -3,8 +3,9 @@ package pthfndr.src.main;
 import java.util.ArrayList;
 
 import pthfndr.src.main.Class.PC.*;
+import pthfndr.src.main.Special.ExtraordinaryAblitiy.DamageReduction;
 
-public class Class {
+public class Class implements Special.List{
 	private String name;
 	private int classID = -1;
 	private ArrayList<Special> special;
@@ -35,8 +36,18 @@ public class Class {
 	public ArrayList<Special> getSpecial() {
 		return this.special;
 	}
+	public Special returnFromPointOfIndex(Special special) {
+		return this.getSpecial().get(this.getSpecial().indexOf(special));
+	}
+	
+	public void replaceSpecial(Special newSpecial, Special oldSpecial) { // replaces a specail ability with another one , used to rplace specials with better versions of themselves ie damage reduction, or replace class abilities entirely in the case of class variants
+		this.special.remove(oldSpecial);
+		this.special.add(newSpecial);
+			
+	}
 	public void addSpecial(Special special) {
-		this.special.add(special);
+		if (!this.special.contains(special)) // checks to see if special is already on the list;
+			this.special.add(special);
 	}
 	public void setLevel(int level) {
 		this.level = level;
@@ -54,8 +65,6 @@ public class Class {
 	}
 	
 	static class PC {
-		
-		
 		public static final int BARBARIAN = 0, BARD = 1, CLERIC = 2, DRUID = 3, FIGHTER = 4, MONK = 5, PALADIN = 6, RANGER = 7, ROGUE = 8, WIZARD = 9, SCORCERER = 10;
 		public final int[] hitDie = {12,8,8,8,10,8,10,10,8,6,6};
 		public static class Barbarian extends Class {
@@ -211,14 +220,17 @@ public class Class {
 		}
 	}
 	
-	public void setClassAbilities(int level, int classID, boolean PC) {
+	public void setClassAbilities(int level, int classID, boolean isPC) {
 		// method for setting all class abilities according to level 
 		
-		if (!PC) {
+		if (!isPC) {
 			
 			switch (classID) {
 			case NPC.ADEPT:
-				
+				if (level >= 2) {
+					this.addSpecial(summonFamiliar);
+				}
+					
 				break;
 
 			default:
@@ -226,7 +238,22 @@ public class Class {
 			}
 			
 		}
-		
+		if (isPC) {
+			switch (classID) {
+			case PC.BARBARIAN:
+				switch (level) {
+				case 20:
+					this.addSpecial(mightyRage);
+					if (this.getSpecial().contains(damageReduction)) {
+						this.replaceSpecial(new DamageReduction(5,Type.Damage.NONE),damageReduction);
+						
+					}
+					this.addSpecial(new Special.ExtraordinaryAblitiy.DamageReduction(5,Type.Damage.NONE));
+						
+				}
+			
+			}
+		}
 	}
 	
 	public boolean equals(Class x) {
