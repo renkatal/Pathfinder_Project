@@ -15,6 +15,11 @@ public class Item implements Size,Material,Condition {
 		this.currentHP = this.maxHP;
 		this.setArmorClass();
 	}
+	public Item( String name, double cost) {
+		//Spell component constructor
+		this.setName(name);
+		this.setCost(cost);
+	}
 	private String name;
 	private int armorClass; // items own armor class
 	private int currentHP; // current hit points of the item
@@ -439,6 +444,17 @@ public class Item implements Size,Material,Condition {
 	}
 	public int getSlot() {
 		return this.slot;
+	}
+	
+	public interface SpellComponent {
+		public static String componentCode(Item item) {
+			String value = "Item " + Generate.codeName(item.name) + " = new Item(" + item.getName() + ", " + item.getCost() + ");";
+			return value;
+		}
+		
+		Item batGuano = new Item("Bat Guano", 0.0);
+		Item rubarbLeaf = new Item("Rubarb Leaf", 0.0);
+		Item addersStomach = new Item("Adder's Stomach", 0.0);
 	}
 
 

@@ -1,8 +1,12 @@
 package pthfndr.src.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class Spell implements Alignment, Type, Magic, Time {
+import pthfndr.src.main.Name.Magic.subschool;
+
+
+public class Spell implements Alignment, Type, Magic, Magic.School, Time {
 	
 	private String name;
 	private byte[] school = new byte[2];
@@ -13,6 +17,19 @@ public class Spell implements Alignment, Type, Magic, Time {
 	private Range range;
 	private Aim aim;
 	
+	public Spell(String name, byte[] school,boolean[] discriptor, byte level, Component components, int castingTime, Range range, Aim aim) {
+		
+	}
+	public Spell() {
+		//test spell constructor
+		this.name = "Test Spell";
+		this.level = 1;
+		this.components = new Component(true, false, new ArrayList<Item>(Arrays.asList(Item.SpellComponent.batGuano, Item.SpellComponent.addersStomach)), null, false);
+		this.castingTime = STANDARD_ACTION;
+		this.range = new Range(Range.PERSONAL);
+		this.aim = new Aim(null, null);
+	};
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -20,9 +37,9 @@ public class Spell implements Alignment, Type, Magic, Time {
 		return this.name;
 	}
 	
-	public void setSchool(byte school, byte subschool) {
-		this.school[0] = school;
-		this.school[1] = subschool;
+	public void setSchool(int school, int subschool) {
+		this.school[0] = (byte) school;
+		this.school[1] = (byte) subschool;
 	}
 	public byte[] getSchool() {
 		return this.school;
@@ -73,7 +90,7 @@ public class Spell implements Alignment, Type, Magic, Time {
 		return this.aim;
 	}
 	
-	public class Component {
+	public static class Component {
 		private boolean verbal;
 		private boolean somatic;
 		private ArrayList<Item> material = new ArrayList<>();
@@ -103,11 +120,32 @@ public class Spell implements Alignment, Type, Magic, Time {
 		public boolean isDevineFocus() {
 			return devineFocus;
 		}
+		public String materialCode() {
+			String value = "null";
+			if (this.getMaterial() != null) {
+				value = "new ArrayList<Item>(Arrays.asList(";
+				for (int i = 0; i < this.getMaterial().size(); i ++) {
+					value += "Item.SpellComponent." + Generate.codeName(this.getMaterial().get(i).getName());
+					if (i < this.getMaterial().size() - 1) {
+						value += ", ";
+					}
+					else {
+						value += ")";
+					}
+				}
+			}
+			return value;
+		}
 		
+		public String toCode() {
+			String c = ", ";
+		//	Component(boolean verbal, boolean somatic, ArrayList<Item> material, Item focus, boolean devineFocus) {
+			return "new Component(" + this.isVerbal() +	c + this.isSomatic() + c + materialCode() + c +  this.getFocus() + c + this.isDevineFocus()  + ")";
+		}
 		
 	}
 	
-	public class Range {
+	public static class Range {
 		public static final byte PERSONAL = 0, TOUCH = 1, CLOSE = 2, MEDIUM = 3, LONG = 4, UNLIMITED = 5;
 		private boolean personal;
 		private boolean touch;
@@ -115,7 +153,7 @@ public class Spell implements Alignment, Type, Magic, Time {
 		private boolean medium;
 		private boolean longRange;
 		private boolean unlimited;
-		private int inFeet;
+		private int inFeet = 0;
 		
 		public Range(int range) {
 			switch (range) {
@@ -171,14 +209,47 @@ public class Spell implements Alignment, Type, Magic, Time {
 		public int getInFeet() {
 			return inFeet;
 		}
+		
+		String toCode() {
+			String c = ", ";
+			String value = "Range(";
+			if (this.inFeet != 0) {
+				value += inFeet;
+			}
+			else {
+				if(close) {
+					value += CLOSE;
+				}
+				else if(longRange) {
+					value += LONG;
+				}
+				else if(medium) {
+					value += MEDIUM;
+				}
+				else if(personal) {
+					value += PERSONAL;
+				}
+				else if(touch) {
+					value += TOUCH;
+				}
+				else if(unlimited) {
+					value += UNLIMITED;
+				}
+			}
+			return value + ")";
+		}
 				
 	}
 	
-	public class Aim {
+	public static class Aim {
 		private ArrayList<Object> targets = new ArrayList<>();
 		private Effect effect;
 		private Area area;
 		
+		public Aim (Effect effect, Area area) {
+			this.setEffect(effect);
+			this.setArea(area);
+		}
 		
 		public void addTarget(Creature creature) {
 			this.targets.add(creature);
@@ -216,14 +287,15 @@ public class Spell implements Alignment, Type, Magic, Time {
 			return this.area;
 		}
 		
-		public class Effect {
+		public static class Effect {
 			
-			public class Ray extends Effect {
+			public static class Ray extends Effect {
 				public Ray() {
 					super();
+					//Might need something here;
 				}
 			}
-			public class Spread extends Effect {
+			public static class Spread extends Effect {
 				private int radius;
 				private int height;
 				
@@ -243,15 +315,38 @@ public class Spell implements Alignment, Type, Magic, Time {
 			
 			public Effect() {}
 			
+			public String toCode() {
+				
+				String value = "";
+				if( this.getClass() == Spread.class) {
+					Spread x = (Spread) this;
+					value = "new Spread(" + x.getRadius() + ", " + x.getHeight() + ")";
+				}
+				else if (this.getClass() == Ray.class) {
+					value = "new Ray()";
+				}
+				else {
+					value = "new Effect()";
+				}
+				return value;
+			}
 		}
 		
-		public class Area {
+		public static class Area {
 			public final byte BURST = 0, EMINATION = 1, SPREAD = 2;
 			public final byte CONE = 0, CYLINDER = 1, LINE = 2, SPHERE = 3;
 			private int BES;
 			private int shape;
 			private boolean creatures, livingCreatures, objects;
 			private boolean shapeable;
+			
+			public Area(int bes, int shape, boolean creatures, boolean livingCreatures, boolean objects, boolean shapable) {
+				this.setBES(bes);
+				this.setShape(shape);
+				this.setAffects(creatures, livingCreatures, objects);
+				this.setShapable(shapable);
+			}
+			public Area() {};
 			
 			public void setBES(int bes) {
 				this.BES = bes;
@@ -281,9 +376,53 @@ public class Spell implements Alignment, Type, Magic, Time {
 				return this.shapeable;
 			}
 			
+			public String toCode() {
+				String c = ", ";
+				String value = "null";
+				if( this != null) {
+					value = "new Area(" + this.getBES() + c + this.getShape() + c + this.creatures + c + this.objects + c + this.shapeable + ")";
+					//public Area(int bes, int shape, boolean creatures, boolean livingCreatures, boolean objects, boolean shapable)
+				}
+				return value;
+			}
 		}
+		
+		public String toCode() {
+			String c = ", ";
+			
+			String value = "new Aim(";
+			if (this.effect != null)
+				value += this.effect.toCode() + c;
+			else 
+				value += "null" + c;
+			if (this.area != null)
+				value += this.area.toCode() + ")";
+			else
+				value += "null" + ")";
+			//public Aim (Effect effect, Area area)
+			return value;
+			
+		}
+		
 	}
 	
-
+	public static interface List {
+		
+	}
+	
+	public String toCode() {
+		//public Spell(String name, byte[] school,boolean[] discriptor, byte level, Component components, int castingTime, Range range, Aim aim) {
+			
+		String c = ", ";
+		return "Spell " + Generate.codeName(this.getName()) + " = new Spell(\"" + this.getName() + "\"" + c + Generate.arrayToString(this.getSchool()) + c + this.getLevel() + c + this.getComponents().toCode() + c + this.getCastingTime() + c + this.getRange().toCode() + c + this.getAim().toCode()+ ");"; 
+	
+	}
+	
+	public static void main(String args[]) {
+		Spell test = new Spell();
+		test.setName("Pool of Bones");
+		test.setSchool(Magic.School.UNIVERSAL, Magic.School.Subschool.NONE);
+		System.out.println(test.toCode());
+	}
 	
 }

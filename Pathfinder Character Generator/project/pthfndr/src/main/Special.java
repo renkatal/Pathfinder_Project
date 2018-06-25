@@ -41,7 +41,88 @@ public class Special implements Magic.Desciptor{
 			return true;
 		return false;
 	}
+	
+	public static class MagicArmor extends Special {
+		private boolean armor;
+		private boolean sheild;
+		private int bonusCost;
+		private double gpCost;
+		private int auraStrenght;
+		private int auraSchool;
+		private Spell spell;
+		public MagicArmor(String name) {
+			super(name);
+		}
 		
+		public void setArmor(boolean value) {
+			this.armor = value;
+		}
+		public boolean isArmor() {
+			return this.armor;
+		}
+		
+		public boolean isSheild() {
+			return sheild;
+		}
+		public void setSheild(boolean sheild) {
+			this.sheild = sheild;
+		}
+
+		public int getBonusCost() {
+			return bonusCost;
+		}
+		public void setBonusCost(int bonusCost) {
+			this.bonusCost = bonusCost;
+		}
+
+		public double getGpCost() {
+			return gpCost;
+		}
+		public void setGpCost(double gpCost) {
+			this.gpCost = gpCost;
+		}
+		
+		public void setAura(int strenght, int school) {
+			this.auraStrenght = strenght;
+			this.auraSchool = school;
+		}
+		public int[] getAura() {
+			int[] aura = {this.auraStrenght,this.auraSchool};
+			return aura;
+		}
+		
+		
+		public boolean isAplicable(Item item) {
+			return true;
+		}
+
+		public static class Animated extends MagicArmor {
+			public Animated() {
+				super("Animated");
+				this.setArmor(false);
+				this.setSheild(true);
+				this.setBonusCost(2);
+				this.setAura(Aura.Strenght.STRONG, Magic.School.TRANSMUTATION);
+			}
+			
+			public boolean isAplicable(Item item) {
+				if (item.equals(Sheild.List.sheildTower) || item.getClass() == new Armor().getClass()) 
+					return false;
+				return true;
+			}
+		}
+		
+		public static class ArrowCatching extends MagicArmor {
+			public ArrowCatching() {
+				super("Arrow Catching");
+				this.setArmor(false);
+				this.setSheild(true);
+			}
+		}
+		
+		
+	}
+	
 	public static class ExtraordinaryAblitiy extends Special {
 		public ExtraordinaryAblitiy(String name) {
 			super(name);

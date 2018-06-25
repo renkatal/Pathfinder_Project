@@ -10,16 +10,16 @@ public interface Name {
 	public static final String[] aura = {};
 	public static final String[] DRTypes =  {"Piercing", "Bludgeoning", "Slashing", "Adamantine", "Silver", "Coldiron", "Magic", "Epic", "Good", "Evil", "Chaos", "Law"};
 	
-	static class Alignment {
+	static interface Alignment {
 		public static final String lawful = "Lawful", neutral = "Neutal", chaotic = "Chaotic", good = "Good", evil = "Evil";
 	}
-	static class Class {
+	static interface Class {
 		public static final String[] PC = { "Barbarian", "Bard",  "Cleric", "Druid", "Fighter", "Monk","Paladin", "Ranger", "Rogue","Wizard","Sorcerer"};
 		public static final String[] NPC = { "Adept", "Aristocrat", "Commoner", "Expert", "Warrior" };
 	}
-	static class Magic {
+	static interface Magic {
 		public static final String[] school = {"Abjuration", "Conjuration", "Divination", "Enchantment", "Illusion", "Necromancy", "Transmutation", "Universal"};
-		static class subscool {
+		static interface subschool {
 			public static final String[] conjuaration = {"", "Calling", "Creation", "Healing", "Summoning", "Teleportation"};
 			public static final String[] divination = {"", "Scrying"};
 			public static final String[] enchantment = {"", "Charm", "Compulsion"};

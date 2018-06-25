@@ -130,8 +130,7 @@ public class Armor extends Item {
 				+ "Size." + Generate.finalIntName(Size.name[this.getCreatureSize()]) + c  + "Type." + Generate.finalIntName(Name.type[this.getCreatureType()]) + c + this.isMasterwork() + ");"; 
 	}
 	
-	public static Armor None(Creature creature)
-	{
+	public static Armor None(Creature creature) {
 		Armor None = new Armor("None", ArmorType.NONE, 0, -1, 0, 0, 0, 0, Material.NONE, creature.getSize(), creature.getType(), false);
 		return None;
 	}
