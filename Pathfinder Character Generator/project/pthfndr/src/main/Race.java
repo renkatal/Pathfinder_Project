@@ -10,5 +10,6 @@ public interface Race {
 	public void addBonus(int race);
 	public void characterRaceSize(int race);
 	public void raceSpeed(int race);
+	
 }
 

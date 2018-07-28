@@ -5,6 +5,7 @@ import java.util.Scanner;
 import pthfndr.src.main.Spell.Aim;
 import pthfndr.src.main.Spell.Aim.Effect;
 import pthfndr.src.main.Spell.Component;
+import pthfndr.src.main.Spell.Duration.SavingThrow;
 import pthfndr.src.main.Spell.Range;
 
 public class Generate implements Magic {
@@ -93,19 +94,25 @@ public class Generate implements Magic {
 	}
 	
 	public static Spell spellCreator() {
-		String name; 
+		String name;
 		byte[] school = {0,0};
 		boolean[] descriptor = new boolean[18]; 
-		byte level; 
+		int[] level = {-1,-1,-1,-1,-1};
 		Component components;
 		int castingTime = 0;
 		Range range = null;
 		Aim aim;
+		Spell.Duration duration = null;
+		SavingThrow save = new SavingThrow();
+		boolean spellResistance = false;
+		
+		//Name
 		System.out.println("Name:");
 		name = input.nextLine();
-		System.out.println("School: \n ABJURATION = 0, CONJURATION = 1, DIVINATION = 2, ENCHANTMENT = 3\n ILLUSION = 4, NECROMANCY = 5, TRANSMUTATION = 6, UNIVERSAL = 7");
-		school[0] = input.nextByte();
-		input.nextLine();
+		//School, subschool, description
+		System.out.println("School: ");
+		numericList(Name.Magic.school, 1, 3);
+		school[0] = (byte) intTryCatch(0, 7);
 		switch(school[0]) {
 		case School.CONJURATION:
 			System.out.println("Subschool:");
@@ -118,7 +125,7 @@ public class Generate implements Magic {
 					System.out.println(Name.Magic.subschool.conjuaration[i]);
 				}
 			}
-			school[1] = input.nextByte();
+			school[1] = (byte) intTryCatch(0,Name.Magic.subschool.conjuaration.length-1);
 			break;
 		case School.DIVINATION:
 			System.out.println("Subschool:");
@@ -131,7 +138,7 @@ public class Generate implements Magic {
 					System.out.println(Name.Magic.subschool.divination[i]);
 				}
 			}
-			school[1] = input.nextByte();
+			school[1] = (byte) intTryCatch(0,Name.Magic.subschool.divination.length-1);
 			break;
 		case School.ENCHANTMENT:
 			System.out.println("Subschool:");
@@ -144,7 +151,7 @@ public class Generate implements Magic {
 					System.out.println(Name.Magic.subschool.enchantment[i]);
 				}
 			}
-			school[1] = input.nextByte();
+			school[1] = (byte) intTryCatch(0,Name.Magic.subschool.enchantment.length-1);
 			break;
 		case School.ILLUSION:
 			System.out.println("Subschool:");
@@ -157,7 +164,7 @@ public class Generate implements Magic {
 					System.out.println(Name.Magic.subschool.illusion[i]);
 				}
 			}
-			school[1] = input.nextByte();
+			school[1] = (byte) intTryCatch(0,Name.Magic.subschool.illusion.length-1);
 			break;
 		case School.TRANSMUTATION:
 			System.out.println("Subschool:");
@@ -170,20 +177,18 @@ public class Generate implements Magic {
 					System.out.println(Name.Magic.subschool.transmuation[i]);
 				}
 			}
-			school[1] = input.nextByte();
+			school[1] = (byte) intTryCatch(0,Name.Magic.subschool.transmuation.length-1);
 			break;
 		default:
 			break;
 		}
-		input.nextLine();
 		System.out.println("Descriptor y/n:");
 		String x = input.nextLine();
 		if (x.charAt(0) == 'y' || x.charAt(0) == 'Y') {
-			numericList(Name.Magic.descriptor);
 			boolean flag = true;
 			while(flag) {
-				int desc = input.nextInt();
-				input.nextLine();
+				numericList(Name.Magic.descriptor,1,3);
+				int desc = intTryCatch(0, Name.Magic.descriptor.length-1);
 				descriptor[desc] = true;
 				System.out.println("Additonal Descriptor y/n:");
 				x = input.nextLine();
@@ -192,20 +197,51 @@ public class Generate implements Magic {
 				}
 			}
 		}
-		System.out.println("Level :");
-		level = input.nextByte();
-		input.nextLine();
+		boolean casterTypeFlag = false;
+		do {
+		System.out.println("Caster Type:");
+		String[] casterNames = {Name.Class.PC[Class.PC.BARD],Name.Class.PC[Class.PC.CLERIC],Name.Class.PC[Class.PC.DRUID],Name.Class.PC[Class.PC.PALADIN],Name.Class.PC[Class.PC.RANGER],Name.Class.PC[Class.PC.WIZARD] + "/" + Name.Class.PC[Class.PC.SCORCERER]};
+		numericList(casterNames,1,3);
+		int casterType = intTryCatch(0, 5);
+		System.out.println("Spell level:");
+		int spellLevel = intTryCatch(0,9);
+		level[casterType] = spellLevel;
+		System.out.println("Additonal Caster Type? T/F");
+		boolean check = boolTryCatch();
+		casterTypeFlag = check;
+		} while (casterTypeFlag);
+		//Casting time
+		System.out.println("Casting Time:\n 1 - Standard Action\n 2 - Full Round \n 3 - Minutes\n 4 - Hours");
+		int castCheck = input.nextInt();
+		switch (castCheck) {
+		case 1:
+			castingTime = Time.STANDARD_ACTION;
+			break;
+		case 2:
+			System.out.println("  Number of Rounds:");
+			castingTime = Time.FULL_ROUND * intTryCatch(0);
+			break;
+		case 3:
+			System.out.println("  Number of Minutes:");
+			castingTime = Time.MINUTE * intTryCatch(0);
+			input.nextLine();
+			break;
+		case 4:
+			System.out.println("  Number of Hours:");
+			castingTime = Time.HOUR * intTryCatch(0);
+			break;
+		default:
+			break;
+		}
 		boolean verbal;
 		boolean somatic;
 		ArrayList<Item> material = new ArrayList<>();
 		Item focus = null;
 		boolean devineFocus;
 		System.out.println("Components :\n Verbal :");
-		verbal = input.nextBoolean();
-		input.nextLine();
+		verbal = boolTryCatch();
 		System.out.println(" Somatic :");
-		somatic = input.nextBoolean();
-		input.nextLine();
+		somatic = boolTryCatch();
 		System.out.println(" Material y/n:");
 		x = input.nextLine();
 		boolean flag = false;
@@ -215,7 +251,7 @@ public class Generate implements Magic {
 			material.add(itemCreator(true));
 			System.out.println(" Additonal material y/n:");
 			x = input.nextLine();
-			if (x.charAt(0) != 'y' || x.charAt(0) != 'Y') {
+			if (x.charAt(0) == 'n' || x.charAt(0) == 'N') {
 				flag = false;
 			}
 		}
@@ -224,49 +260,22 @@ public class Generate implements Magic {
 		if (x.charAt(0) == 'y' || x.charAt(0) == 'Y')
 			focus = itemCreator(true);
 		System.out.println(" Devine Focus:");
-		devineFocus = input.nextBoolean();
-		input.nextLine();
-		System.out.println("Casting Time:\n 1 - Standard Action\n 2 - Full Round \n 3 - Minutes\n 4 - Hours");
-		int castCheck = input.nextInt();
-		input.nextLine();
-		switch (castCheck) {
-		case 1:
-			castingTime = Time.STANDARD_ACTION;
-			break;
-		case 2:
-			System.out.println("  Number of Rounds:");
-			castingTime = Time.FULL_ROUND * input.nextInt();
-			input.nextLine();
-			break;
-		case 3:
-			System.out.println("  Number of Minutes:");
-			castingTime = Time.MINUTE * input.nextInt();
-			input.nextLine();
-			break;
-		case 4:
-			System.out.println("  Number of Hours:");
-			castingTime = Time.HOUR * input.nextInt();
-			input.nextLine();
-			break;
-		default:
-			break;
-		}
+		devineFocus = boolTryCatch();
+		
 		System.out.println("Range:\n 0 - Personal\n 1 - Touch\n 2 - Close\n 3 - Medium\n 4 - Long\n 5 - Unlimited 6 - in Feet");
-		int rangeTest = input.nextInt();
-		input.nextLine();
+		int rangeTest = intTryCatch(0,6);
 		if(rangeTest < 6) {
 			range = new Range(rangeTest);
 		}
 		else{
 			System.out.println("  Range in feet:");
-			int rangeInFeet = input.nextInt();
-			input.nextLine();
+			int rangeInFeet = intTryCatch(0);
+			
 			range = new Range(rangeInFeet);	
 		}
 		System.out.println("Aim :\n Effect\n  0 - General\n  1 - Ray\n  2 - Spread");
 		Spell.Aim.Effect effect = new Effect();
-		int effectTest = input.nextInt();
-		input.nextLine();
+		int effectTest = intTryCatch(0, 2);
 		switch(effectTest) {
 		case 0:
 			//might have to add more to this part later 6-24-18
@@ -276,11 +285,9 @@ public class Generate implements Magic {
 			break;
 		case 2:
 			System.out.println("   Radius:");
-			int radius = input.nextInt();
-			input.nextLine();
+			int radius = intTryCatch(0);
 			System.out.println("   Height:");
-			int height = input.nextInt();
-			input.nextLine();
+			int height = intTryCatch(0);
 			effect = new Spell.Aim.Effect.Spread(radius, height);
 			break;
 		default:
@@ -293,10 +300,8 @@ public class Generate implements Magic {
 			if(areaFlag){
 				System.out.println(" Area\n  0 - Burst, 1 - Emmination, 2 - Spread");
 				int bes = intTryCatch(0,2);
-				input.nextLine();
 				System.out.println("  0 - Cone, 1 - Cylinder, 2 - Line, 3 - Sphere");
 				int shape = intTryCatch(0,3);
-				input.nextLine();
 				System.out.println("  Affects living creatures:");
 				boolean livingCreatures = boolTryCatch();
 				System.out.println("  Affects all creatures:");
@@ -305,54 +310,122 @@ public class Generate implements Magic {
 				boolean objects = boolTryCatch();
 				System.out.println("  is shapable:");
 				boolean shapable = boolTryCatch();
-				input.nextLine();
 				area = new Spell.Aim.Area(bes, shape, creatures, livingCreatures, objects, shapable);
 			}
 		}
+		
 		aim = new Aim(effect, area);
 		components = new Component(verbal, somatic, material, focus, devineFocus);
-		Spell inputSpell = new Spell(name, school, descriptor, level, components, castingTime, range, aim);
+		
+		System.out.println("Saving throw T/F");
+		boolean saveFlag = boolTryCatch();
+		boolean[] fort = new boolean[4] , ref = new boolean[4], will = new boolean[4];
+		boolean harmless = false;
+		if(saveFlag) {
+			System.out.println(" Fort T/F");
+			boolean fortFlag = boolTryCatch();
+			if(fortFlag)
+				fort = inputSaveTypes();
+			System.out.println(" Ref T/F");
+			boolean refFlag = boolTryCatch();
+			if(refFlag)
+				ref = inputSaveTypes();
+			System.out.println(" Will T/F");
+			boolean willFlag = boolTryCatch();
+			if(willFlag)
+				will = inputSaveTypes();
+			save = new SavingThrow(new boolean[][] {fort,ref,will}, harmless); 
+		}
+		System.out.println("  Harmless T/F");
+		save.setHarmless(boolTryCatch());
+		System.out.println("Spell Resistance T/F");
+		spellResistance = boolTryCatch();
+		
+		
+		Spell inputSpell = new Spell(name, school, descriptor, level, components, castingTime, range, aim, duration, save, spellResistance);
 		return inputSpell;
 	}
 	
-	public static boolean boolTryCatch() {
-		boolean flag = false;
-		boolean value = false;
-		do {
-			try {
-				value = input.nextBoolean(); 
-			} catch (Exception e) {
-				System.out.println("Invalid Entry - Please try again:");
-				flag = true;
-			}
-		} while(flag);
+	public static boolean[] inputSaveTypes() {
+		boolean[] value = {false,false,false,false};
+		// Negates = 0, Partial = 1, Half = 2, Disbelief = 3;
+		System.out.println("    Negates T/F");
+		value[0] = boolTryCatch();
+		System.out.println("    Partial T/F");
+		value[1] = boolTryCatch();
+		System.out.println("    Half T/F");
+		value[2] = boolTryCatch();
+		System.out.println("    Disbelief T/F");
+		value[3] = boolTryCatch();
 		return value;
 	}
+	
+	//Input verification Functions
+	public static boolean boolTryCatch() {
+		boolean value = false;
+		try {
+			value = stringToBool();
+		} catch (Exception e) {
+			System.out.println("Invalid Entry - Please try again:");
+			value = boolTryCatch();
+			
+		}
+		return value;
+	}
+	
+	public static boolean stringToBool() {
+		String in = input.nextLine();
+		if(in.charAt(0) == 't' || in.charAt(0) == 'T' || in.charAt(0) == 'y' || in.charAt(0) == 'Y') {
+			return true;
+		}
+		return false;
+		
+	}
+	
 	public static int intTryCatch(int min, int max) {
-		boolean flag = false;
+		boolean flag = true;
 		int value = min;
 		do {
 			try {
 				value = input.nextInt();
+				input.nextLine();
 				if (value < min || value > max) {
 					System.out.println("Invalid Entry - Please try again:");
-					flag = true;
+					intTryCatch(min, max);
 				}
+				else { flag = false; }
 			} catch (Exception e) {
 				System.out.println("Invalid Entry - Please try again:");
-				flag = true;
 			}
 		} while(flag);
 		return value;
 	}
 	
-	public static String spellCodeGenration() {
+	public static int intTryCatch(int min) {
+		boolean flag = true;
+		int value = min;
+		do {
+			try {
+				value = input.nextInt();
+				input.nextLine();
+				if (value < min ) {
+					System.out.println("Invalid Entry - Please try again:");
+				} else { flag = false;}
+			} catch (Exception e) {
+				System.out.println("Invalid Entry - Please try again:");
+			}
+		} while(flag);
+		return value;
+	}
+
+	//Spell code list generator
+	public static void spellCodeGenration() {
 		ArrayList<Spell> spellList = new ArrayList<>();
 		String value = "";
 		boolean flag = true;
 		while(flag) {
 			spellList.add(spellCreator());
-			System.out.println("Next Spell : Y\n");
+			System.out.println("Next Spell : Y/N");
 			String check = input.nextLine();
 			if (check.charAt(0) == 'n' || check.charAt(0) == 'N') {
 				flag = false;
@@ -360,17 +433,30 @@ public class Generate implements Magic {
 			}
 		}
 		ArrayList<Item> componentList = new ArrayList<>();		
+		ArrayList<Item> focusList = new ArrayList<>();
 		for( int i = 0; i < spellList.size(); i++) {
-			value += spellList.get(i).toCode() + "\n";
+			value += spellList.get(i).toCode() + "\n\n";
 			componentList.addAll(0, spellList.get(i).getComponents().getMaterial());
+			focusList.add(spellList.get(i).getComponents().getFocus());
 		}
-		value += "~~~ Spell Components ~~~";
-		for( int i = 0; i < componentList.size(); i++) {
-			value += Item.SpellComponent.componentCode(componentList.get(i));
+		if(componentList.get(0) != null) {
+			value += "~~~ Spell Material Components ~~~\n\n";
+			for( int i = 0; i < componentList.size(); i++) {
+				value += Item.SpellComponent.componentCode(componentList.get(i)) + "\n";
+			}
+			value += "\n";
 		}
-		return value;
+		if(focusList.get(0) != null) {
+			value += "~~~ Spell Focus Components ~~~\n\n";
+			for( int i = 0; i < focusList.size(); i++) {
+				value += Item.SpellComponent.componentCode(focusList.get(i)) + "\n";
+			}
+			value += "\n";
+		}
+		System.out.println(value);
 	}
 	
+	//Array string generators
 	public static String arrayToString(boolean[] input) {
 		String c = ", ";
 		if (input == null)
@@ -437,6 +523,15 @@ public class Generate implements Magic {
 		return value + "}";
 	}
 	
+	public static int[] arrayListToIntArray(ArrayList<Byte> input) {
+		int[] value = new int [input.size()];
+		for(int i = 0; i < value.length; i++) {
+			value[i] = input.get(i);
+		}
+		return value;
+		
+	}
+	//Armor Code generation method
 	public static String armorCreator() {
 		String name;
 		int type, ACbonus, maxDex, checkPenalty, spellFalure, material = 0, creatureSize, creatureType;
@@ -489,10 +584,11 @@ public class Generate implements Magic {
 		}
 		creatureSize = Size.MEDIUM;
 		creatureType = Type.HUMANOID;
-		
 		Armor inputArmor = new Armor(name, type, ACbonus, maxDex, checkPenalty, spellFalure, weight, cost, material, creatureSize, creatureType, masterwork);
 		return inputArmor.toCode();
 	}
+	
+	//Armor code list generator
 	public static void armorHelper() {
 		ArrayList<String> hold = new ArrayList<>();
 		boolean flag = true;
@@ -510,19 +606,38 @@ public class Generate implements Magic {
 			}
 	}
 	
-	public static void numericList(String[] list) {
+	//Numeric list generator - from string
+	public static void numericList(String[] list, int spacesIn, int itemsPerLine) {
+		int count = 0;
 		for(int i = 0; i < list.length; i++) {
-			System.out.print(" " + i + " - ");
-			System.out.println(list[i]);
+			if(spacesIn > 0 && count == 0) {
+				for(int j = 0; j < spacesIn; j++) {
+					System.out.print(" ");
+				}
+			}
+			System.out.print( i + " - " + list[i]);
+			count++;
+			if (count == itemsPerLine || i == list.length -1) {
+				System.out.println("");
+				count = 0;
+			}else {
+				System.out.print(",  ");
+			}
 		}
 	}
 	
-	public static interface Test {
-		Creature bob = new Creature();
-		Sheild testSheild = Sheild.masterwork(Sheild.List.sheildLightWooden);
-	}
+
 	public static void main(String[] args) {
-		spellCodeGenration();
+	 Test.creature.addSpecial(new Special.ExtraordinaryAblitiy.SpellResistance(20));
+	 Test.spell.setSpellResistance(true);
+	 boolean flag = true;
+	 int count = 1;
+	 while(flag) {
+		flag = Test.spell.spellResistanceCheck(Test.wizard, Class.PC.WIZARD, Test.creature);
+		System.out.println(flag + " " +count/*Special.check(Test.creature, Special.List.spellResistance));*/);
+		count ++;
+		}
+	 //spellCodeGenration();
 	}
 
 }

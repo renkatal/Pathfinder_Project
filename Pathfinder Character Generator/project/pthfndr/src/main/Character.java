@@ -6,7 +6,7 @@ public class Character extends Creature implements Race {
 
 	private int race;
 	private String name;
-	private ArrayList<Class> ClassList;
+	private ArrayList<Class> ClassList = new ArrayList<>();
 	private double height;
 	private double weight;
 	private String eyeColor;
@@ -24,7 +24,13 @@ public class Character extends Creature implements Race {
 	{
 		this.name = name;
 		this.setStats(stats);
-		
+		this.setMaxHP(maxHP);
+	}
+	
+	public Character(Class characterClass, int level)
+	{
+		//this.name = Name.Class.PC[characterClass.getClassID()];
+		this.addClass(characterClass, level);
 	}
 	
 	//name getters and setters
@@ -36,8 +42,17 @@ public class Character extends Creature implements Race {
 	}
 	
 	//class methods
-	public void addClass(Class x) {
+	public void addClass(Class x, int level) {
+		x.setLevel(level);
 		this.ClassList.add(x);
+	}
+	public byte getClassLevel(Class x) {
+		for(Class temp: ClassList) {
+			if(temp.equals(x)) {
+				return (byte) temp.getLevel();
+			}
+		}
+		return -1;
 	}
 
 	//race getters and setters

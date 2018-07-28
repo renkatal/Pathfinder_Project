@@ -3,6 +3,7 @@ package pthfndr.src.main;
 public interface Name {
 	public static final String[] stat = {"Strength","Dexterity","Constitution","Intelligence","Wisdom","Charisma"};
 	public static final String[] statAbbrv = {"STR","DEX","CON","INT","WIS","CHA"};
+	public static final String[] save = {"Fortitude","Reflex","Will"};
 	public static final String[] race = {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Halfling"};
 	public static final String[] material = {"Glass", "Paper", "Cloth", "Rope", "Ice", "Leather", "Hide", "Wood", "Stone", "Iron", "Steel", "Mithral", "Adamantine","Copper","Silver", "Gold", "Platinum"};
 	public static final String[] type = {"Aberration", "Animal", "Construct", "Dragon", "Fey", "Humanoid", "Magical Beast", "Monsterous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"};

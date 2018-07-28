@@ -34,14 +34,7 @@ public class Special implements Magic.Desciptor{
 		}
 		return check;
 	}
-	
-	public boolean equals(Special x)
-	{
-		if(this.getName() == x.getName())
-			return true;
-		return false;
-	}
-	
+		
 	public static class MagicArmor extends Special {
 		private boolean armor;
 		private boolean sheild;
@@ -91,9 +84,15 @@ public class Special implements Magic.Desciptor{
 			return aura;
 		}
 		
+		public void setSpell(Spell spell) {
+			this.spell = spell;
+		}
+		public Spell getSpell() {
+			return this.spell;
+		}
 		
 		public boolean isAplicable(Item item) {
-			return true;
+			return true; // override if cannot be applied to any shield or armor
 		}
 
 		public static class Animated extends MagicArmor {
@@ -167,8 +166,8 @@ public class Special implements Magic.Desciptor{
 			}
 			public static boolean check(Creature creature, ExtraordinaryAblitiy ragePower) {
 				boolean value = false;
-				if (creature.getSpecialAbilities().contains(Special.List.ragePowers)) {
-					RagePowers mod = (RagePowers) creature.getSpecial(creature.getSpecialAbilities().indexOf(Special.List.ragePowers));
+				if (Special.check(creature, Special.List.ragePowers)) {
+					RagePowers mod = (RagePowers) creature.getSpecial(Special.List.ragePowers);
 					value = mod.getRagePowers().contains(ragePower);
 				}
 					return value;
@@ -390,8 +389,26 @@ public class Special implements Magic.Desciptor{
 				return retvalue;
 			}
 		}
+		
+		public static class DarkVision extends ExtraordinaryAblitiy {
+			private int distance;
+			
+			public DarkVision(int distance) {
+				super("Darkvision");
+				this.distance = distance;
+			}
+			public DarkVision() {
+				super("Darkvision");
+			}
+			
+			public int getDistance() {
+				return this.distance;
+			}
+		}
 				
 		public static class Regeneration extends ExtraordinaryAblitiy {
+			private byte rate;
+			
 			public Regeneration(byte rate) {
 				super("Regeneration");
 				this.setRate(rate);
@@ -399,7 +416,7 @@ public class Special implements Magic.Desciptor{
 			public Regeneration() {
 				super("Regeneration");
 			}
-			private byte rate;
+			
 			public byte getRate() {
 				return rate;
 			}
@@ -408,13 +425,39 @@ public class Special implements Magic.Desciptor{
 			}
 			public static Special regeneration = new Regeneration();
 		}
+		
+		public static class SpellResistance extends ExtraordinaryAblitiy {
+			private byte value;
+			
+			public SpellResistance() {
+				super("Spell Resistance");
+			}
+			public SpellResistance(int value) {
+				super("Spell Resistance");
+				this.value = (byte) value;
+			}
+			
+			public byte getValue() {
+				return this.value;
+			}
+			public void setValue(byte value) {
+				this.value = value;
+			}
+			
+			
+			
+		}
 	
 	}
 	
 	public static class SpellLikeAblitiy extends Special {
+		public byte casterLevel;
+		
 		public SpellLikeAblitiy(String name) {
 			super(name);
 		}
+		
+		
 		
 		public class EnergyBurst extends SpellLikeAblitiy {
 			
@@ -473,6 +516,14 @@ public class Special implements Magic.Desciptor{
 		}
 	}
 	
+	public boolean equals(Special special) {
+		if(this.getName() == special.getName()) {
+			return true ;
+		} 
+		return false;
+		
+	}
+	
 	public interface List {
 		// for comparing with equals(Special) function
 		//Extaordinary Abilities
@@ -482,16 +533,16 @@ public class Special implements Magic.Desciptor{
 		public static RagePowers ragePowers = new RagePowers();
 		public static UncannyDodge uncannyDodge = new UncannyDodge();
 		public static TrapSense trapSense = new TrapSense();
+		public static SpellResistance spellResistance = new SpellResistance();
+		public static DarkVision darkVision = new DarkVision();
 		//Spell-like Abilities
 		public static SummonFamiliar summonFamiliar = new SummonFamiliar();
 		//Supernatural Abilities
 		public static ChannelEnergy channelEnergy = new ChannelEnergy();
-		
-		
 	}
 
 	public static void main(String[] args) {
-		Creature bob = Generate.Test.bob;
+		Creature bob = Test.creature;
 		bob.addSpecial(Special.List.ragePowers);
 		RagePowers hold = (RagePowers) bob.getSpecialAbilities().get(bob.getSpecialAbilities().indexOf(Special.List.ragePowers));
 		hold.addRagePower(RagePowers.List.noEscape);

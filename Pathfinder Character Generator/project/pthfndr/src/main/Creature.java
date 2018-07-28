@@ -1,6 +1,8 @@
 package pthfndr.src.main;
 import java.util.ArrayList;
 
+import pthfndr.src.main.Special.ExtraordinaryAblitiy.SpellResistance;
+
 public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,Anatomy,Slot,Language,Environment {
 	private String creatureName;
 	private int type;
@@ -39,6 +41,7 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	private ArrayList<Special> specialAbilities= new ArrayList<>();
 	private boolean[] conditions;
 	private int[] anatomy;
+	private boolean[] breatheEatSleep;
 	private Item[] slot;
 	private int armorProficiency = Armor.ArmorType.NONE; // sets creatures initial armor proficentcy to none
 	private Armor armor = Armor.None(this);
@@ -441,8 +444,22 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 			this.addSpecial(source.get(i));
 		}
 	}
+	public Special getSpecial(Special special) {
+		for(int i = 0 ; i < specialLength(); i ++) {
+			if (specialAbilities.get(i).equals(special)) {
+				return specialAbilities.get(i);
+			}
+		}
+		return null;
+	}
 	public Special getSpecial(int x) {
 		return specialAbilities.get(x);
+	}
+	public Special.ExtraordinaryAblitiy.SpellResistance getSR() {
+		if (Special.check(this, Special.List.spellResistance)) {
+			return (SpellResistance) this.getSpecial(Special.List.spellResistance);
+		}
+		return null;
 	}
 	
 	//breath getters and setters
@@ -574,6 +591,8 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 	
 	public void setAnatomy(int type) {
 		switch (type) {
+		case ABERRATION:
+			this.anatomy[BODY] = 1;
 		case HUMANOID:
 			this.anatomy[BODY] = 1;
 			this.anatomy[Anatomy.HEAD] = 1;
@@ -589,6 +608,13 @@ public class Creature implements Type,Alignment,Condition,Size,Skill,Sense,Stat,
 		default:
 			break;
 		}
+	}
+	
+	public void setBreatheEatSleep(int type) {
+			this.breatheEatSleep = Type.breathEatSleep[type];
+	}
+	public boolean[] getBreatheEatSleep() {
+		return this.breatheEatSleep;
 	}
 	
 	//Slot mehtods
